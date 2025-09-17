@@ -56,6 +56,20 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             margin-bottom: 20px;
         }
+
+         .carousel-item img {
+        height: 400px;
+        object-fit: cover;
+        }
+        .carousel-caption h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        .carousel-caption p {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+        }
+
     </style>
 </head>
 
@@ -74,16 +88,60 @@
                 </div>
                 </a>
             </div>
-            <div class="col-sm-9 text-end">
-                <a href="/adminlogin">
-                    <img src="https://cdn.pixabay.com/photo/2013/07/13/13/38/man-161282__340.png"
-                         alt="admin-logo" width="40" height="40"/>
-                </a>
-                <p style="font-size: 0.9rem; font-weight: 500; color:#111;">Admin</p>
-            </div>
         </div>
     </div>
 </div>
+
+<!-- Carousel Section -->
+<div id="hotelCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#hotelCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#hotelCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#hotelCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <!-- Slide 1 -->
+        <div class="carousel-item active">
+            <img src="https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1500&q=80" class="d-block w-100" alt="Hotel Lobby">
+            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                <h3>Welcome to Pratap Hotels</h3>
+                <p>Where Comfort Meets Royalty (A property of Bhanu Pratap)</p>
+                <a href="/booking" class="btn btn-primary">Book Your Stay</a>
+            </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="carousel-item">
+            <img src="https://images.unsplash.com/photo-1560347876-aeef00ee58a1?auto=format&fit=crop&w=1500&q=80" class="d-block w-100" alt="Hotel Room">
+            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                <h3>Luxurious Rooms</h3>
+                <p>Relax in our elegantly designed rooms with sea view options</p>
+                <a href="/booking" class="btn btn-primary">View Rooms</a>
+            </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="carousel-item">
+            <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1500&q=80" class="d-block w-100" alt="Hotel Pool">
+            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                <h3>Refreshing Balconies & Amenities</h3>
+                <p>Enjoy our outdoor view, luxury stays and premium facilities</p>
+                <a href="/booking" class="btn btn-primary">Explore Amenities</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#hotelCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#hotelCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
 
 <!-- Info Section -->
 <div class="info-section">
