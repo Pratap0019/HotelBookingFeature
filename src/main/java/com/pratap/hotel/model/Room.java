@@ -3,37 +3,29 @@ package com.pratap.hotel.model;
 import java.util.List;
 
 public class Room {
-    private int number;
-    private RoomType roomType;
+    private final int number;
+    private final RoomType roomType;
     private boolean booked;
-    private boolean seaView;
-    private List<Extras> extras;
-    private Pet pet;
+    private final boolean seaView;
+    private final boolean balcony;
 
-    public Room(int number, RoomType type, boolean booked, boolean seaView, List<Extras> extras, Pet pet) {
+
+    public Room(int number, RoomType type, boolean booked, boolean seaView, boolean balcony) {
         this.number = number;
-        this.roomType = roomType;
         this.booked = booked;
         this.seaView = seaView;
-        this.extras = extras;
-        this.pet = pet;
+        this.roomType = type;
+        this.balcony = balcony;
     }
 
     public int getRoomNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
     public RoomType getRoomType() {
         return roomType;
     }
 
-    public void setType(RoomType type) {
-        this.roomType = type;
-    }
 
     public boolean isBooked() {
         return booked;
@@ -46,26 +38,10 @@ public class Room {
     public boolean hasSeaView() {
         return seaView;
     }
-
-    public void setSeaView(boolean seaView) {
-        this.seaView = seaView;
+    public boolean hasBalcony() {
+        return balcony;
     }
 
-    public List<Extras> getExtras() {
-        return extras;
-    }
-
-    public void setExtras(List<Extras> extras) {
-        this.extras = extras;
-    }
-
-    public Pet getPet() {
-        return pet;
-    }
-
-    public void setPet(Pet pet) {
-        this.pet = pet;
-    }
 
     @Override
     public String toString() {
@@ -74,8 +50,7 @@ public class Room {
                 ", type=" + roomType +
                 ", booked=" + booked +
                 ", seaView=" + seaView +
-                ", extras=" + extras +
-                ", pet=" + pet +
+                ", balcony=" + balcony +
                 '}';
     }
 }
