@@ -3,44 +3,44 @@ package com.pratap.hotel.model;
 import java.util.List;
 
 public class Room {
-    private int roomNumber;
-    private RoomType type;
-    private boolean reserved;
+    private int number;
+    private RoomType roomType;
+    private boolean booked;
     private boolean seaView;
     private List<Extras> extras;
     private Pet pet;
 
-    public Room(int roomNumber, RoomType type, boolean reserved, boolean seaView, List<Extras> extras, Pet pet) {
-        this.roomNumber = roomNumber;
-        this.type = type;
-        this.reserved = reserved;
+    public Room(int number, RoomType type, boolean booked, boolean seaView, List<Extras> extras, Pet pet) {
+        this.number = number;
+        this.roomType = roomType;
+        this.booked = booked;
         this.seaView = seaView;
         this.extras = extras;
         this.pet = pet;
     }
 
     public int getRoomNumber() {
-        return roomNumber;
+        return number;
     }
 
-    public void setRoomNumber(int roomNumber) {
-        this.roomNumber = roomNumber;
+    public void setNumber(int number) {
+        this.number = number;
     }
 
-    public RoomType getType() {
-        return type;
+    public RoomType getRoomType() {
+        return roomType;
     }
 
     public void setType(RoomType type) {
-        this.type = type;
+        this.roomType = type;
     }
 
-    public boolean isReserved() {
-        return reserved;
+    public boolean isBooked() {
+        return booked;
     }
 
-    public void setReserved(boolean reserved) {
-        this.reserved = reserved;
+    public void setBooked(boolean booked) {
+        this.booked = booked;
     }
 
     public boolean hasSeaView() {
@@ -66,5 +66,16 @@ public class Room {
     public void setPet(Pet pet) {
         this.pet = pet;
     }
-}
 
+    @Override
+    public String toString() {
+        return "Room{" +
+                "number=" + number +
+                ", type=" + roomType +
+                ", booked=" + booked +
+                ", seaView=" + seaView +
+                ", extras=" + extras +
+                ", pet=" + pet +
+                '}';
+    }
+}
