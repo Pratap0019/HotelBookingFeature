@@ -45,7 +45,7 @@ public class PratapHotel {
             if (petWeight <= 8) petFee = HotelData.PET_FEE_RATES.get("under8kg");
             else if (petWeight <= 15) petFee = HotelData.PET_FEE_RATES.get("under15kg");
             else petFee = HotelData.PET_FEE_RATES.get("over15kg");
-            breakdown.put("Pet Fee", petFee);
+            breakdown.put("Pet Fee", petFee * daysStayed);
         }
 
         // Subtotal before service charge

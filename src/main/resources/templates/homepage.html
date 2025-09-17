@@ -32,7 +32,7 @@
             top: 0; left: 0;
             width: 100%;
             z-index: 1000;
-            height: 120px;
+            height: 100px;
             display: flex;
             align-items: center;
             padding: 15px 25px;
@@ -65,12 +65,14 @@
     <div class="container-fluid">
         <div class="row g-3 align-items-center">
             <div class="col-sm-3">
+                <a href="/" style="text-decoration: none; color: inherit;">
                 <div class="header-content">
                     <div>
                         <h2 class="mb-0">PRATAP HOTELS</h2>
                         <p class="mb-0">Where Comfort Meets Royalty</p>
                     </div>
                 </div>
+                </a>
             </div>
             <div class="col-sm-9 text-end">
                 <a href="/adminlogin">
@@ -128,46 +130,62 @@
         </div>
     </div>
 
-    <!-- Prices Table -->
-    <div class="card">
-        <div class="card-header bg-dark text-white">Rates & Fees</div>
-        <div class="card-body">
-            <table class="table table-bordered table-striped align-middle">
-                <thead class="table-dark">
-                <tr>
-                    <th>Category</th>
-                    <th>Name</th>
-                    <th>Price (INR)</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- Room Rates -->
-                <tr th:each="entry : ${roomRates}">
-                    <td>Room Rate</td>
-                    <td th:text="${entry.key}"></td>
-                    <td th:text="${entry.value}"></td>
-                </tr>
+    <h4 class="mt-4">Pricing Information</h4>
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+            <th>Room Rates</th>
+            <th>Extras</th>
+            <th>Pet Fees</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <!-- Room Rates -->
+            <td>
+                <table class="table table-sm mb-0">
+                    <tbody>
+                    <tr th:each="entry : ${roomRates}">
+                        <td><b th:text="${entry.key}"></b></td>
+                        <td th:text="${entry.value} + ' ₹'"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
 
-                <!-- Extras -->
-                <tr th:each="entry : ${extrasRate}">
-                    <td>Extra</td>
-                    <td th:text="${entry.key}"></td>
-                    <td th:text="${entry.value}"></td>
-                </tr>
+            <!-- Extras -->
+            <td>
+                <table class="table table-sm mb-0">
+                    <tbody>
+                    <tr th:each="entry : ${extrasRate}">
+                        <td><b th:text="${entry.key}"></b></td>
+                        <td th:text="${entry.value} + ' ₹'"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
 
-                <!-- Pet Fees -->
-                <tr th:each="entry : ${petFeeRates}">
-                    <td>Pet Fee</td>
-                    <td th:text="${entry.key}"></td>
-                    <td th:text="${entry.value}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+            <!-- Pet Fees -->
+            <td>
+                <table class="table table-sm mb-0">
+                    <tbody>
+                    <tr th:each="entry : ${petFeeRates}">
+                        <td><b th:text="${entry.key}"></b></td>
+                        <td th:text="${entry.value} + ' ₹'"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
 </div>
-
+<div class="text-center my-5">
+    <a href="/booking" class="btn btn-lg btn-primary shadow">
+        Book Stay Now
+    </a>
+</div>
 
 </body>
 </html>

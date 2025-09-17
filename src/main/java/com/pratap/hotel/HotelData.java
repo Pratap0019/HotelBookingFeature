@@ -34,13 +34,13 @@ public class HotelData {
         ROOM_RATES.put(RoomType.SUITE, 2500.0);
 
         // Extras
-        EXTRAS_RATE.put(Extras.MINIFRIDGE, 1000.0);
-        EXTRAS_RATE.put(Extras.WIFI, 200.0);
-        EXTRAS_RATE.put(Extras.MATTRESS, 300.0);
+        EXTRAS_RATE.put(Extras.MINIFRIDGE, 200.0);
+        EXTRAS_RATE.put(Extras.WIFI, 100.0);
+        EXTRAS_RATE.put(Extras.MATTRESS, 200.0);
 
         // Pet fees
-        PET_FEE_RATES.put("under8kg", 200.0);
-        PET_FEE_RATES.put("under15kg", 350.0);
-        PET_FEE_RATES.put("over15kg", 500.0);
+        PET_FEE_RATES.put("under8kg", 100.0);
+        PET_FEE_RATES.put("under15kg", 150.0);
+        PET_FEE_RATES.put("over15kg", 200.0);
     }
 }
