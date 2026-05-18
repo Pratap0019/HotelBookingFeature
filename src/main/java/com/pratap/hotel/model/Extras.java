@@ -3,5 +3,8 @@ package com.pratap.hotel.model;
 public enum Extras {
     MINIFRIDGE,
     WIFI,
-    MATTRESS
+    MATTRESS,
+    SPA,
+    GymPASS,
+    PoolPASS
 }

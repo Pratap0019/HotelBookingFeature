@@ -38,15 +38,17 @@ public class HotelBookingController {
                                  @RequestParam("daysStayed") int daysStayed,
                                  @RequestParam(value = "extras", required = false) List<Extras> extras,
                                  @RequestParam(value = "petWeight", required = false) Double petWeight,
+                                 @RequestParam(value = "spaSessions", required = false) Integer spaSessions,
                                  Model model) {
 
-        Bill bill = SunMoonResort.calculateBill(roomNumber, daysStayed, extras, petWeight);
+        Bill bill = SunMoonResort.calculateBill(roomNumber, daysStayed, extras, petWeight, spaSessions);
 
         model.addAttribute("bill", bill);
         model.addAttribute("rooms", HotelData.ROOMS);
         model.addAttribute("roomRates", HotelData.ROOM_RATES);
-        model.addAttribute("extras", HotelData.EXTRAS_RATE);
-        model.addAttribute("petFees", HotelData.PET_FEE_RATES);
+        model.addAttribute("extrasRate", HotelData.EXTRAS_RATE);
+        model.addAttribute("petFeeRates", HotelData.PET_FEE_RATES);
+        model.addAttribute("spaSessions", spaSessions);
 
         model.addAttribute("roomNumber", roomNumber);
         model.addAttribute("daysStayed", daysStayed);
