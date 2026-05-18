@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmed Bookings - Pratap Hotels</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Confirmed Bookings</h2>
+        <a href="/booking" class="btn btn-primary">New Booking</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(bookings)}">
+        <div class="alert alert-info">No bookings yet.</div>
+    </div>
+
+    <table class="table table-striped" th:if="${!#lists.isEmpty(bookings)}">
+        <thead>
+        <tr>
+            <th>Room Number</th>
+            <th>Room Type</th>
+            <th>Guest Name</th>
+            <th>Contact</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="b : ${bookings}">
+            <td th:text="${b.roomNumber}"></td>
+            <td th:text="${b.roomType}"></td>
+            <td th:text="${b.guestName}"></td>
+            <td th:text="${b.contactNumber}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>
+
