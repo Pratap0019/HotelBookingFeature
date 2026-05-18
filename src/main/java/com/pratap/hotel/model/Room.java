@@ -1,19 +1,17 @@
 package com.pratap.hotel.model;
 
-import java.util.List;
-
 public class Room {
     private final int number;
     private final RoomType roomType;
     private boolean booked;
-    private final boolean seaView;
+    private final boolean natureView;
     private final boolean balcony;
 
 
-    public Room(int number, RoomType type, boolean booked, boolean seaView, boolean balcony) {
+    public Room(int number, RoomType type, boolean booked, boolean natureView, boolean balcony) {
         this.number = number;
         this.booked = booked;
-        this.seaView = seaView;
+        this.natureView = natureView;
         this.roomType = type;
         this.balcony = balcony;
     }
@@ -35,8 +33,8 @@ public class Room {
         this.booked = booked;
     }
 
-    public boolean hasSeaView() {
-        return seaView;
+    public boolean hasNatureView() {
+        return natureView;
     }
     public boolean hasBalcony() {
         return balcony;
@@ -49,7 +47,7 @@ public class Room {
                 "number=" + number +
                 ", type=" + roomType +
                 ", booked=" + booked +
-                ", seaView=" + seaView +
+                ", seaView=" + natureView +
                 ", balcony=" + balcony +
                 '}';
     }
