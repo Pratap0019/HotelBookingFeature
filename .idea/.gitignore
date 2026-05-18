@@ -18,3 +18,15 @@
 # IntelliJ IDEA project files
 *.idea/
 # IntelliJ IDEA module files
+target/
+# IntelliJ IDEA project files
+out/
+# IntelliJ IDEA project filesbuild/
+# IntelliJ IDEA project filesdist/
+# IntelliJ IDEA project fileslogs/
+# IntelliJ IDEA project files*.log
+# IntelliJ IDEA project files*.tmp
+# IntelliJ IDEA project files*.bak
+# IntelliJ IDEA project files*.swp
+# IntelliJ IDEA project files*.swo
+# IntelliJ IDEA project files*.swn
