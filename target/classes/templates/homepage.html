@@ -22,17 +22,15 @@
         body {
             background-color: #dcdcdc;
             font-family: 'Poppins', sans-serif;
-            padding-top: 130px;
+            padding-top: 0;
         }
         .header {
-            background-image: url('https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1500&q=80');
+            background-image: url('https://images.unsplash.com/photo-1495365200479-c4ed1d35e1aa?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
             background-size: cover;
             background-position: center;
-            position: fixed;
-            top: 0; left: 0;
+            position: relative;
             width: 100%;
-            z-index: 1000;
-            height: 100px;
+            height: 90px;
             display: flex;
             align-items: center;
             padding: 15px 25px;
@@ -41,10 +39,11 @@
         .header-content {
             background: rgba(255, 255, 255, 0.75);
             border-radius: 12px;
-            padding: 12px 20px;
+            padding: 6px 12px;
             display: flex;
             align-items: center;
             gap: 12px;
+            width: fit-content;
         }
 
         .logo-section {
@@ -55,9 +54,11 @@
             border-radius: 0;
             box-shadow: none;
             width: 100%;
+            position: relative;
+            margin-bottom: 20px;
         }
         .logo-container {
-            margin-bottom: 20px;
+            margin-bottom: 0;
             width: 100%;
         }
         .logo-container img {
@@ -77,16 +78,21 @@
             font-family: 'Playfair Display', serif;
             font-weight: 700;
             color: #2c3e50;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
         }
         .hotel-description-section {
             text-align: center;
-            margin: 40px auto;
-            max-width: 600px;
-            padding: 30px;
+            position: absolute;
+            bottom: -180px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            padding: 10px;
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 10;
+            opacity: 0.85;
         }
 
         .info-section {
@@ -111,6 +117,16 @@
             font-family: 'Poppins', sans-serif;
             font-weight: 400;
         }
+        .header-content h2 {
+            white-space: nowrap;
+            font-size: 1.8rem;
+            margin-bottom: 0;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #1a472a;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
 
     </style>
 </head>
@@ -120,7 +136,7 @@
 <div class="header">
     <div class="container-fluid">
         <div class="row g-3 align-items-center">
-            <div class="col-sm-3">
+            <div class="col-md-6">
                 <a href="/" style="text-decoration: none; color: inherit;">
                 <div class="header-content">
                     <div>
@@ -150,6 +166,7 @@
             travelers and vacation seekers alike. From elegantly appointed rooms to exceptional dining, we are
             committed to making your stay unforgettable.
         </p>
+        <p>(A property of Mr. Bhanu Pratap)</p>
     </div>
 </div>
 
@@ -163,17 +180,17 @@
     <div class="carousel-inner">
         <!-- Slide 1 -->
         <div class="carousel-item active">
-            <img src="https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1500&q=80" class="d-block w-100" alt="Hotel Lobby">
+            <img src="https://images.unsplash.com/photo-1657707419206-1ee02449a7ab?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="d-block w-100" alt="Hotel Lobby">
             <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
-                <h3>Welcome to SunMoon Resorts</h3>
-                <p>Where Comfort Meets Royalty (A property of Mr. Bhanu Pratap)</p>
+                <h3>Escape to nature's serenity</h3>
+                <p>Where comfort meets royalty with blooming nature </p>
                 <a href="/booking" class="btn btn-primary">Book Your Stay</a>
             </div>
         </div>
 
         <!-- Slide 2 -->
         <div class="carousel-item">
-            <img src="https://images.unsplash.com/photo-1560347876-aeef00ee58a1?auto=format&fit=crop&w=1500&q=80" class="d-block w-100" alt="Hotel Room">
+            <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="d-block w-100" alt="Hotel Room">
             <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
                 <h3>Luxurious Rooms</h3>
                 <p>Relax in our elegantly designed rooms with sea view options</p>
@@ -183,7 +200,7 @@
 
         <!-- Slide 3 -->
         <div class="carousel-item">
-            <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1500&q=80" class="d-block w-100" alt="Hotel Pool">
+            <img src="https://images.unsplash.com/photo-1758775150908-45951c9bbe71?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="d-block w-100" alt="Hotel Pool">
             <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
                 <h3>Refreshing Balconies & Amenities</h3>
                 <p>Enjoy our outdoor view, luxury stays and premium facilities</p>
@@ -217,7 +234,7 @@
                     <th>Room No</th>
                     <th>Type</th>
                     <th>Balcony</th>
-                    <th>Sea View</th>
+                    <th>nature's View</th>
                     <th>Status</th>
                 </tr>
                 </thead>
@@ -232,10 +249,10 @@
                         <span th:if="${!room.hasBalcony()}" class="badge bg-danger">No</span>
                     </td>
 
-                    <!-- Sea View -->
+                    <!-- Nature View -->
                     <td>
-                        <span th:if="${room.hasSeaView()}" class="badge bg-success">Yes</span>
-                        <span th:if="${!room.hasSeaView()}" class="badge bg-danger">No</span>
+                        <span th:if="${room.hasNatureView()}" class="badge bg-success">Yes</span>
+                        <span th:if="${!room.hasNatureView()}" class="badge bg-danger">No</span>
                     </td>
 
                     <!-- Booked -->

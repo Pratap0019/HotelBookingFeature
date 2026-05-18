@@ -16,7 +16,7 @@ public class SunMoonResort {
         double dailyRate = baseRate;
 
         // Apply surcharges to base rate
-        if (room.hasSeaView()) {
+        if (room.hasNatureView()) {
             dailyRate += baseRate * 0.2;
         }
         if (room.hasBalcony()) {
