@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>SUNMOON RESORTS</title>
@@ -146,6 +146,9 @@
                 </div>
                 </a>
             </div>
+            <div class="col-md-6 text-end">
+                <a href="/admin/login" class="btn btn-sm btn-outline-light">Admin Login</a>
+            </div>
         </div>
     </div>
 </div>
@@ -239,26 +242,26 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="room : ${rooms}">
-                    <td th:text="${room.roomNumber}"></td>
-                    <td th:text="${room.roomType}"></td>
+                <tr data-th-each="room : ${rooms}">
+                    <td data-th-text="${room.roomNumber}"></td>
+                    <td data-th-text="${room.roomType}"></td>
 
                     <!-- Balcony -->
                     <td>
-                        <span th:if="${room.hasBalcony()}" class="badge bg-success">Yes</span>
-                        <span th:if="${!room.hasBalcony()}" class="badge bg-danger">No</span>
+                        <span data-th-if="${room.hasBalcony()}" class="badge bg-success">Yes</span>
+                        <span data-th-if="${!room.hasBalcony()}" class="badge bg-danger">No</span>
                     </td>
 
                     <!-- Nature View -->
                     <td>
-                        <span th:if="${room.hasNatureView()}" class="badge bg-success">Yes</span>
-                        <span th:if="${!room.hasNatureView()}" class="badge bg-danger">No</span>
+                        <span data-th-if="${room.hasNatureView()}" class="badge bg-success">Yes</span>
+                        <span data-th-if="${!room.hasNatureView()}" class="badge bg-danger">No</span>
                     </td>
 
                     <!-- Booked -->
                     <td>
-                        <span th:if="${room.booked}" class="badge bg-danger">Booked</span>
-                        <span th:if="${!room.booked}" class="badge bg-success">Available</span>
+                        <span data-th-if="${room.booked}" class="badge bg-danger">Booked</span>
+                        <span data-th-if="${!room.booked}" class="badge bg-success">Available</span>
                     </td>
                 </tr>
                 </tbody>
@@ -281,9 +284,9 @@
             <td>
                 <table class="table table-sm mb-0">
                     <tbody>
-                    <tr th:each="entry : ${roomRates}">
-                        <td><b th:text="${entry.key}"></b></td>
-                        <td th:text="${entry.value} + ' ₹'"></td>
+                    <tr data-th-each="entry : ${roomRates}">
+                        <td><b data-th-text="${entry.key}"></b></td>
+                        <td data-th-text="${entry.value} + ' ₹'"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -293,9 +296,9 @@
             <td>
                 <table class="table table-sm mb-0">
                     <tbody>
-                    <tr th:each="entry : ${extrasRate}">
-                        <td><b th:text="${entry.key}"></b></td>
-                        <td th:text="${entry.value} + ' ₹'"></td>
+                    <tr data-th-each="entry : ${extrasRate}">
+                        <td><b data-th-text="${entry.key}"></b></td>
+                        <td data-th-text="${entry.value} + ' ₹'"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -305,9 +308,9 @@
             <td>
                 <table class="table table-sm mb-0">
                     <tbody>
-                    <tr th:each="entry : ${petFeeRates}">
-                        <td><b th:text="${entry.key}"></b></td>
-                        <td th:text="${entry.value} + ' ₹'"></td>
+                    <tr data-th-each="entry : ${petFeeRates}">
+                        <td><b data-th-text="${entry.key}"></b></td>
+                        <td data-th-text="${entry.value} + ' ₹'"></td>
                     </tr>
                     </tbody>
                 </table>

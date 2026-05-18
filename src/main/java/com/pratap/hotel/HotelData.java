@@ -2,7 +2,6 @@ package com.pratap.hotel;
 
 import java.util.*;
 import com.pratap.hotel.model.Extras;
-import com.pratap.hotel.model.Pet;
 import com.pratap.hotel.model.RoomType;
 import com.pratap.hotel.model.Room;
 import com.pratap.hotel.model.Guest;
