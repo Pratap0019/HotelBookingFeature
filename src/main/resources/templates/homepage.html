@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Homepage - Pratap Hotels</title>
+    <title>SUNMOON RESORTS</title>
 
     <!-- Bootstrap CSS -->
     <link
@@ -47,6 +47,48 @@
             gap: 12px;
         }
 
+        .logo-section {
+            text-align: center;
+            margin: 0 auto;
+            padding: 0;
+            background: white;
+            border-radius: 0;
+            box-shadow: none;
+            width: 100%;
+        }
+        .logo-container {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 0;
+            display: block;
+        }
+        .hotel-description {
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            color: #333;
+            line-height: 1.6;
+        }
+        .hotel-description h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .hotel-description-section {
+            text-align: center;
+            margin: 40px auto;
+            max-width: 600px;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
         .info-section {
             max-width: 900px;
             margin: 40px auto;
@@ -82,13 +124,32 @@
                 <a href="/" style="text-decoration: none; color: inherit;">
                 <div class="header-content">
                     <div>
-                        <h2 class="mb-0">PRATAP HOTELS</h2>
+                        <h2 class="mb-0">SUNMOON RESORTS</h2>
                         <p class="mb-0">Where Comfort Meets Royalty</p>
                     </div>
                 </div>
                 </a>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Logo & Description Section -->
+<div class="logo-section">
+    <div class="logo-container">
+        <img src="/Images/SunMoon.PNG" alt="SunMoon Resorts Logo">
+    </div>
+</div>
+
+<div class="hotel-description-section">
+    <div class="hotel-description">
+        <h3>Welcome to SunMoon Resorts</h3>
+        <p>
+            Experience luxury and comfort at SunMoon Resorts, where world-class amenities meet personalized service.
+            Nestled in a prime location with stunning sea views, our hotel offers the perfect retreat for business
+            travelers and vacation seekers alike. From elegantly appointed rooms to exceptional dining, we are
+            committed to making your stay unforgettable.
+        </p>
     </div>
 </div>
 
@@ -104,8 +165,8 @@
         <div class="carousel-item active">
             <img src="https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1500&q=80" class="d-block w-100" alt="Hotel Lobby">
             <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
-                <h3>Welcome to Pratap Hotels</h3>
-                <p>Where Comfort Meets Royalty (A property of Bhanu Pratap)</p>
+                <h3>Welcome to SunMoon Resorts</h3>
+                <p>Where Comfort Meets Royalty (A property of Mr. Bhanu Pratap)</p>
                 <a href="/booking" class="btn btn-primary">Book Your Stay</a>
             </div>
         </div>

@@ -4,7 +4,7 @@ import com.pratap.hotel.model.*;
 
 import java.util.*;
 
-public class PratapHotel {
+public class SunMoonResort {
 
     /**
      * Calculate bill with user-selected extras and optional pet weight

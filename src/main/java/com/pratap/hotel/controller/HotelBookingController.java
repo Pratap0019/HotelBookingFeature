@@ -1,7 +1,7 @@
 package com.pratap.hotel.controller;
 
 import com.pratap.hotel.HotelData;
-import com.pratap.hotel.PratapHotel;
+import com.pratap.hotel.SunMoonResort;
 import com.pratap.hotel.model.Bill;
 import com.pratap.hotel.model.Extras;
 import org.springframework.stereotype.Controller;
@@ -40,7 +40,7 @@ public class HotelBookingController {
                                  @RequestParam(value = "petWeight", required = false) Double petWeight,
                                  Model model) {
 
-        Bill bill = PratapHotel.calculateBill(roomNumber, daysStayed, extras, petWeight);
+        Bill bill = SunMoonResort.calculateBill(roomNumber, daysStayed, extras, petWeight);
 
         model.addAttribute("bill", bill);
         model.addAttribute("rooms", HotelData.ROOMS);
