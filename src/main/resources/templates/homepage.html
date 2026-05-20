@@ -109,13 +109,27 @@
             width: 95%;
             margin: auto;
             padding: 10px;
-            background: white;
+            background: rgba(255, 255, 255, 0.85);
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            opacity: 0.85;
             position: relative;
             z-index: 2;
             transform: translateY(-65%);
+        }
+
+        .owner-image-wrapper {
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .owner-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ffffff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         .info-section {
@@ -228,6 +242,9 @@
                 committed to making your stay unforgettable.
             </p>
             <p>(A property of Mr. Bhanu Pratap)</p>
+            <div class="owner-image-wrapper">
+                <img src="/Images/Owner.JPG" alt="Owner - Mr. Bhanu Pratap" class="owner-image">
+            </div>
         </div>
     </div>
 </div>
