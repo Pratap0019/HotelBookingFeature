@@ -1,0 +1,30 @@
+# IDE and build artifacts
+.idea/
+*.iml
+/.classpath
+/.project
+/.settings/
+
+# Maven build output
+/target/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*~
+
+# IntelliJ
+out/
+
+# Node (if any)
+node_modules/
+
+# Environment
+.env
+
