@@ -219,6 +219,59 @@
             color: #212529;
         }
 
+        /* Footer Styles */
+        footer {
+            background-color: #FAF9F3; /* Off-white background */
+            color: #B8860B; /* Golden-brown text */
+            margin-top: 60px;
+            padding: 50px 0 30px;
+            border-top: 3px solid #B8860B;
+        }
+        footer h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #B8860B;
+            margin-bottom: 20px;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+        footer p, footer a, footer li {
+            color: #8b6914;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        footer a {
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: #5b3a21;
+            text-decoration: underline;
+        }
+        footer ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        footer ul li:before {
+            content: "✓ ";
+            margin-right: 8px;
+            color: #B8860B;
+            font-weight: bold;
+        }
+        .footer-divider {
+            border-top: 1px solid #B8860B;
+            opacity: 0.3;
+        }
+        .footer-bottom {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(184, 134, 11, 0.3);
+            color: #8b6914;
+            font-size: 13px;
+        }
+
     </style>
 </head>
 
@@ -422,10 +475,76 @@
 
 </div>
 <div class="text-center my-5">
-    <a href="/booking" class="btn btn-lg btn-primary shadow">
-        Book Stay Now
-    </a>
-</div>
+     <a href="/booking" class="btn btn-lg btn-primary shadow">
+         Book Stay Now
+     </a>
+ </div>
 
-</body>
-</html>
+<!-- Footer Section -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <!-- Contact Information -->
+            <div class="col-md-3 mb-4">
+                <h5>Contact Us</h5>
+                <ul style="list-style: none; padding: 0;">
+                    <li><strong>Phone:</strong></li>
+                    <li><a href="tel:+918797033665">+91 (879) 703-3665</a></li>>
+                    <li class="mt-2"><strong>Email Support:</strong></li>
+                    <li><a href="bhanuofficial019@gmail.com">bhanuofficial019@gmail.com</a></li>
+                    <li class="mt-2"><strong>Reservations:</strong></li>
+                    <li><a href="mailto:booking@sunmoonresort.com">booking@sunmoonresort.com</a></li>
+                </ul>
+            </div>
+
+            <!-- Locations & Hours -->
+            <div class="col-md-3 mb-4">
+                <h5>Visit Us</h5>
+                <ul style="list-style: none; padding: 0;">
+                    <li><strong>Main Resort</strong></li>
+                    <li>Coastal Paradise Zone</li>
+                    <li>Beachfront Avenue, 123</li>
+                    <li>Coastal City, CC 12345</li>
+                    <li class="mt-2"><strong>Hours:</strong></li>
+                    <li>24/7 Guest Services</li>
+                    <li>Front Desk: Open 24 Hours</li>
+                </ul>
+            </div>
+
+            <!-- Amenities & Services -->
+            <div class="col-md-3 mb-4">
+                <h5>Our Services</h5>
+                <ul>
+                    <li>Luxury Rooms & Suites</li>
+                    <li>Sea View & Balcony Options</li>
+                    <li>WiFi & Premium Amenities</li>
+                    <li>24/7 Room Service</li>
+                    <li>Concierge & Travel Services</li>
+                    <li>Pet-Friendly Accommodations</li>
+                </ul>
+            </div>
+
+            <!-- Quick Links & Help -->
+            <div class="col-md-3 mb-4">
+                <h5>Quick Links</h5>
+                <ul style="list-style: none; padding: 0;">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/booking">Book a Room</a></li>
+                    <li><a href="mailto:bhanuofficial019@gmail.com">Get Help</a></li>
+                    <li><a href="mailto:feedback@sunmoonresort.com">Send Feedback</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <p>&copy; 2024 SunMoon Resorts. All rights reserved. | Owned & Operated by Mr. Bhanu Pratap</p>
+            <p style="margin-top: 10px; font-size: 12px;">Crafting Memories, Creating Comfort | Excellence in Hospitality</p>
+        </div>
+    </div>
+</footer>
+
+ </body>
+ </html>
