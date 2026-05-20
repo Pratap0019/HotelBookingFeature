@@ -195,6 +195,30 @@
             color: #8b5a05; /* slightly darker on hover */
         }
 
+        /* Use resort gold for primary call-to-action buttons on homepage */
+        .btn-primary {
+            background-color: #B8860B;
+            border-color: #B8860B;
+        }
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active {
+            background-color: #8b5a05;
+            border-color: #8b5a05;
+        }
+
+        /* Status badge palette requested for homepage table */
+        .badge-status-yes,
+        .badge-status-available {
+            background-color: #B8860B;
+            color: #fff;
+        }
+        .badge-status-no,
+        .badge-status-booked {
+            background-color: silver;
+            color: #212529;
+        }
+
     </style>
 </head>
 
@@ -325,20 +349,20 @@
 
                     <!-- Balcony -->
                     <td>
-                        <span data-th-if="${room.hasBalcony()}" class="badge bg-success">Yes</span>
-                        <span data-th-if="${!room.hasBalcony()}" class="badge bg-danger">No</span>
+                        <span data-th-if="${room.hasBalcony()}" class="badge badge-status-yes">Yes</span>
+                        <span data-th-if="${!room.hasBalcony()}" class="badge badge-status-no">No</span>
                     </td>
 
                     <!-- Nature View -->
                     <td>
-                        <span data-th-if="${room.hasNatureView()}" class="badge bg-success">Yes</span>
-                        <span data-th-if="${!room.hasNatureView()}" class="badge bg-danger">No</span>
+                        <span data-th-if="${room.hasNatureView()}" class="badge badge-status-yes">Yes</span>
+                        <span data-th-if="${!room.hasNatureView()}" class="badge badge-status-no">No</span>
                     </td>
 
                     <!-- Booked -->
                     <td>
-                        <span data-th-if="${room.booked}" class="badge bg-danger">Booked</span>
-                        <span data-th-if="${!room.booked}" class="badge bg-success">Available</span>
+                        <span data-th-if="${room.booked}" class="badge badge-status-booked">Booked</span>
+                        <span data-th-if="${!room.booked}" class="badge badge-status-available">Available</span>
                     </td>
                 </tr>
                 </tbody>

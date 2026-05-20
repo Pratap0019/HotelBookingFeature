@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
         body {
@@ -50,6 +50,29 @@
         .header .row {
             --bs-gutter-x: 0; /* remove column gutters introduced by .row.g-3 */
         }
+        .row {
+            --bs-gutter-x: 0; /* remove column gutters introduced by .row.g-3 */
+        }
+
+        /* Stylish admin login page title */
+        .booking-title {
+            font-family: 'Cinzel', serif;
+            color: #B8860B;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+        }
+
+        /* Match primary button palette */
+        .btn-primary {
+            background-color: #B8860B;
+            border-color: #B8860B;
+        }
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active {
+            background-color: #8b5a05;
+            border-color: #8b5a05;
+        }
     </style>
 </head>
 <body>
@@ -80,7 +103,7 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card p-4">
-                <h4 class="mb-3">Administrator Login</h4>
+                <h4 class="mb-3 booking-title">Administrator Login</h4>
                 <div data-th-if="${error}" class="alert alert-danger" data-th-text="${error}"></div>
                 <form action="/admin/login" method="post">
                             <div class="mb-3">
@@ -100,4 +123,3 @@
 </div>
 </body>
 </html>
-

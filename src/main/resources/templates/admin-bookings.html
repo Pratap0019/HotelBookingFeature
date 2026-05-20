@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
         body {
@@ -50,6 +50,14 @@
         .header .row {
             --bs-gutter-x: 0; /* remove column gutters introduced by .row.g-3 */
         }
+
+        /* Stylish admin bookings page title */
+        .booking-title {
+            font-family: 'Cinzel', serif;
+            color: #B8860B;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -78,7 +86,8 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Confirmed Bookings (Admin)</h2>
+        <h2 class="booking-title">Confirmed Bookings</h2>
+        <p>(Admin access only)</p>
         <div>
             <a href="/booking" class="btn btn-secondary me-2">New Booking</a>
             <a href="/admin/logout" class="btn btn-outline-danger">Logout</a>
@@ -117,4 +126,3 @@
 </div>
 </body>
 </html>
-
