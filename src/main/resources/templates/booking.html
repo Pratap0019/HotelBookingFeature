@@ -17,7 +17,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
          .header {
-            background-image: url('https://images.unsplash.com/photo-1495365200479-c4ed1d35e1aa?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
             background-size: cover;
             background-position: center;
             position: relative;
@@ -35,6 +34,14 @@
             width: auto;
             max-width: 100%; /* avoid horizontal overflow */
             object-fit: contain;
+            display: block;
+        }
+        .header-center-img {
+            width: 100%;           /* span full column width */
+            height: 80px;          /* fixed visible height */
+            max-height: 80px;
+            object-fit: cover;     /* crop to fill without distortion */
+            object-position: center; /* center the crop */
             display: block;
         }
         /* Remove bootstrap gutters inside header so logo sits flush to the viewport */
@@ -90,7 +97,8 @@
 <div class="header">
     <div class="container-fluid">
         <div class="row g-3 align-items-center">
-            <div class="col-md-6">
+            <!-- Left: Logo -->
+            <div class="col-auto d-flex align-items-center">
                 <a href="/" style="text-decoration: none; color: inherit;">
                     <div class="header-content">
                         <div class="d-flex align-items-center">
@@ -99,7 +107,15 @@
                     </div>
                 </a>
             </div>
-            <div class="col-md-6 text-end">
+
+            <!-- Center: decorative image placed in the empty space between logo and admin -->
+            <div class="col d-flex justify-content-center align-items-center px-0">
+                <!-- Reuse an existing image; adjust src if you want a different file -->
+                <img src="/Images/Header.jpg" alt="Decoration" class="header-center-img">
+            </div>
+
+            <!-- Right: Admin button -->
+            <div class="col-auto d-flex justify-content-end align-items-center">
                 <a href="/admin/login" class="admin-btn" aria-label="Admin">ADMIN</a>
             </div>
         </div>
