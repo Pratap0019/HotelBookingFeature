@@ -114,7 +114,8 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             position: relative;
             z-index: 2;
-            transform: translateY(-36%);
+            /* Negative margin shifts the card and also updates document flow (no extra gap below). */
+            margin-top: -13%;
         }
 
         .owner-image-wrapper {
