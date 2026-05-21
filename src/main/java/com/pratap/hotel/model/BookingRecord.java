@@ -8,14 +8,19 @@ public class BookingRecord {
     private final String roomType;
     private final Bill bill;
     private final int daysStayed;
+    private final String checkInDate;
+    private final String checkOutDate;
 
-    public BookingRecord(int roomNumber, String guestName, String contactNumber, String roomType, Bill bill, int daysStayed) {
+    public BookingRecord(int roomNumber, String guestName, String contactNumber, String roomType, Bill bill, int daysStayed,
+                         String checkInDate, String checkOutDate) {
         this.roomNumber = roomNumber;
         this.guestName = guestName;
         this.contactNumber = contactNumber;
         this.roomType = roomType;
         this.bill = bill;
         this.daysStayed = daysStayed;
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
     }
 
     public int getRoomNumber() {
@@ -40,6 +45,14 @@ public class BookingRecord {
 
     public int getDaysStayed() {
         return daysStayed;
+    }
+
+    public String getCheckInDate() {
+        return checkInDate;
+    }
+
+    public String getCheckOutDate() {
+        return checkOutDate;
     }
 }
 

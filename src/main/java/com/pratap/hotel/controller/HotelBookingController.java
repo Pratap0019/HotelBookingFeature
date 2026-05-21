@@ -130,6 +130,8 @@ public class HotelBookingController {
                                  @RequestParam(value = "guestName", required = false) String guestName,
                                  @RequestParam(value = "contactNumber", required = false) String contactNumber,
                                  @RequestParam("daysStayed") int daysStayed,
+                                 @RequestParam("checkIn") String checkIn,
+                                 @RequestParam("checkOut") String checkOut,
                                  @RequestParam("totalAmount") double totalAmount,
                                  @RequestParam Map<String, String> allParams,
                                  Model model) {
@@ -172,7 +174,7 @@ public class HotelBookingController {
             Bill bill = new Bill(totalAmount, breakdown, calculationDetails);
             
             // Create BookingDetails with guest and bill (only here, at confirmation)
-            BookingDetails bookingDetails = new BookingDetails(guest, bill, daysStayed);
+            BookingDetails bookingDetails = new BookingDetails(guest, bill, daysStayed, checkIn, checkOut);
             HotelData.BOOKINGS.put(roomNumber, bookingDetails);
         }
 
@@ -277,7 +279,18 @@ public class HotelBookingController {
             Guest guest = bookingDetails.getGuest();
             Bill bill = bookingDetails.getBill();
             int daysStayed = bookingDetails.getDaysStayed();
-            bookingRecords.add(new BookingRecord(roomNum, guest.getName(), guest.getContactNumber(), roomType, bill, daysStayed));
+            String checkInDate = bookingDetails.getCheckInDate();
+            String checkOutDate = bookingDetails.getCheckOutDate();
+            bookingRecords.add(new BookingRecord(
+                    roomNum,
+                    guest.getName(),
+                    guest.getContactNumber(),
+                    roomType,
+                    bill,
+                    daysStayed,
+                    checkInDate,
+                    checkOutDate
+            ));
         });
 
         model.addAttribute("bookings", bookingRecords);
