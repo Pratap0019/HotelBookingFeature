@@ -241,13 +241,13 @@
 </div>
 <div class="booking-container container">
     <h2 class="text-center mb-4 booking-title">Book Your Stay</h2>
-    <div data-th-if="${errorMessage}" class="alert alert-danger" role="alert">
+    <div id="bookingAlert" data-th-if="${errorMessage}" class="alert alert-danger" role="alert">
         <span data-th-text="${errorMessage}"></span>
     </div>
     <!-- View bookings moved to admin area -->
 
     <!-- Booking Form -->
-    <div class="card p-4">
+    <div id="calculatePriceArea" class="card p-4">
         <form action="/calculatePrice" method="post">
 
             <!-- Check-in & Check-out -->
@@ -348,7 +348,7 @@
     </div>
 
     <!-- Price Breakdown -->
-    <div data-th-if="${bill}" class="card mt-4 p-4">
+    <div id="priceBreakdown" data-th-if="${bill}" class="card mt-4 p-4">
         <h4>Price Breakdown</h4>
 
         <!-- Assigned room info banner -->
@@ -433,13 +433,25 @@
     </div>
 
     <!-- Success Message -->
-    <div th:if="${successMessage}" class="alert alert-success mt-4 text-center" role="alert">
+    <div id="bookingSuccess" th:if="${successMessage}" class="alert alert-success mt-4 text-center" role="alert">
         <span th:text="${successMessage}"></span>
     </div>
 
 
     </div>
     <!-- JS to calculate days between dates -->
+<script th:inline="javascript">
+    const scrollTargetId = /*[[${scrollTo}]]*/ null;
+    if (scrollTargetId) {
+        window.addEventListener("load", function () {
+            const target = document.getElementById(scrollTargetId);
+            if (target) {
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        });
+    }
+</script>
+
 <script>
     const checkIn = document.getElementById("checkIn");
     const checkOut = document.getElementById("checkOut");

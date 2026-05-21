@@ -51,6 +51,7 @@ public class HotelBookingController {
                 .collect(Collectors.toList());
 
         model.addAttribute("searchedBookings", matchedBookings);
+        model.addAttribute("scrollTo", "searchResultsSection");
         return "homepage";
     }
 
@@ -98,7 +99,7 @@ public class HotelBookingController {
         updateBookingStatus(bookingId, BookingStatus.CANCELLED);
 
         // redirect back to bookings list
-        return "redirect:/bookings";
+        return "redirect:/bookings#bookingsSection";
     }
 
     @PostMapping("/admin/checkIn")
@@ -111,7 +112,7 @@ public class HotelBookingController {
         updateBookingStatus(bookingId, BookingStatus.CHECKED_IN);
 
         // redirect back to bookings list
-        return "redirect:/bookings";
+        return "redirect:/bookings#bookingsSection";
     }
 
     @PostMapping("/admin/checkOut")
@@ -124,7 +125,7 @@ public class HotelBookingController {
         updateBookingStatus(bookingId, BookingStatus.CHECKED_OUT);
 
         // redirect back to bookings list
-        return "redirect:/bookings";
+        return "redirect:/bookings#bookingsSection";
     }
 
     @PostMapping("/calculatePrice")
@@ -172,11 +173,13 @@ public class HotelBookingController {
 
         // First step: only compute date-based availability and let user pick room type after that.
         if ("availability".equalsIgnoreCase(action)) {
+            model.addAttribute("scrollTo", "calculatePriceArea");
             return "booking";
         }
 
         if (roomType == null || roomType.isBlank()) {
             model.addAttribute("errorMessage", "Please select a room type after checking availability.");
+            model.addAttribute("scrollTo", "bookingAlert");
             return "booking";
         }
 
@@ -196,6 +199,7 @@ public class HotelBookingController {
 
         model.addAttribute("assignedRoomNumber", assignedRoom.getRoomNumber());
         model.addAttribute("selectedRoomType", roomType);
+        model.addAttribute("scrollTo", "priceBreakdown");
 
         return "booking";
     }
@@ -220,6 +224,7 @@ public class HotelBookingController {
             model.addAttribute("petFeeRates", HotelData.PET_FEE_RATES);
             model.addAttribute("roomTypeAvailability", getRoomTypeAvailability(checkInDate, checkOutDate));
             model.addAttribute("errorMessage", "This room is no longer available for the selected dates. Please calculate again.");
+            model.addAttribute("scrollTo", "bookingAlert");
             return "booking";
         }
 
@@ -288,6 +293,7 @@ public class HotelBookingController {
             if (contactNumber != null && !contactNumber.isBlank()) msg += " (" + contactNumber + ")";
         }
         model.addAttribute("successMessage", msg);
+        model.addAttribute("scrollTo", "bookingSuccess");
 
         return "booking";
     }

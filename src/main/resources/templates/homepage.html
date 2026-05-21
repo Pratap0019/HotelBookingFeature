@@ -507,7 +507,7 @@
         </tbody>
     </table>
 
-    <div class="card mt-4">
+    <div id="searchResultsSection" class="card mt-4">
         <div class="card-header bg-dark text-white">Search Your Booking</div>
         <div class="card-body">
             <form method="post" action="/searchBookings" class="mb-3">
@@ -566,6 +566,18 @@
     </div>
 
 </div>
+
+<script th:inline="javascript">
+    const scrollTargetId = /*[[${scrollTo}]]*/ null;
+    if (scrollTargetId) {
+        window.addEventListener("load", function () {
+            const target = document.getElementById(scrollTargetId);
+            if (target) {
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        });
+    }
+</script>
 <div class="text-center my-5">
      <a href="/booking" class="btn btn-lg btn-primary shadow">
          Book Stay Now
