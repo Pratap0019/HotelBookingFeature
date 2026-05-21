@@ -236,10 +236,12 @@
                     <div class="col">
                     <label class="form-label" for="checkIn">Check-in Date</label>
                     <input type="date" id="checkIn" class="form-control" required>
+                    <div id="checkInError" class="text-danger small mt-1" style="display:none;">Check-in date cannot be in the past.</div>
                 </div>
                 <div class="col">
                     <label class="form-label" for="checkOut">Check-out Date</label>
                     <input type="date" id="checkOut" class="form-control" required>
+                    <div id="checkOutError" class="text-danger small mt-1" style="display:none;">Check-out date must be after the check-in date.</div>
                 </div>
             </div>
 
@@ -349,6 +351,13 @@
     const checkIn = document.getElementById("checkIn");
     const checkOut = document.getElementById("checkOut");
     const daysStayed = document.getElementById("daysStayed");
+    const checkInError = document.getElementById("checkInError");
+    const checkOutError = document.getElementById("checkOutError");
+
+    // Set today as the minimum check-in date
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    checkIn.setAttribute("min", todayStr);
 
     function calculateDays() {
         if (checkIn.value && checkOut.value) {
@@ -360,8 +369,47 @@
         }
     }
 
-    checkIn.addEventListener("change", calculateDays);
-    checkOut.addEventListener("change", calculateDays);
+    checkIn.addEventListener("change", function () {
+        const checkInError = document.getElementById("checkInError");
+        const checkOutError = document.getElementById("checkOutError");
+
+        // Validate: check-in must not be before today
+        if (checkIn.value < todayStr) {
+            checkIn.value = "";
+            checkInError.style.display = "block";
+            daysStayed.value = "";
+        } else {
+            checkInError.style.display = "none";
+            // Update check-out min to be at least one day after check-in
+            if (checkIn.value) {
+                const minCheckOut = new Date(checkIn.value);
+                minCheckOut.setDate(minCheckOut.getDate() + 1);
+                checkOut.setAttribute("min", minCheckOut.toISOString().split('T')[0]);
+                // Reset check-out if it's now invalid
+                if (checkOut.value && checkOut.value <= checkIn.value) {
+                    checkOut.value = "";
+                    checkOutError.style.display = "block";
+                    daysStayed.value = "";
+                } else {
+                    checkOutError.style.display = "none";
+                }
+            }
+            calculateDays();
+        }
+    });
+
+    checkOut.addEventListener("change", function () {
+        const checkOutError = document.getElementById("checkOutError");
+        // Validate: check-out must be strictly after check-in
+        if (checkIn.value && checkOut.value <= checkIn.value) {
+            checkOut.value = "";
+            checkOutError.style.display = "block";
+            daysStayed.value = "";
+        } else {
+            checkOutError.style.display = "none";
+            calculateDays();
+        }
+    });
 
     // Show/hide spa sessions selector when SPA checkbox is toggled
     const spaCheckbox = document.querySelector("input.extra-checkbox[value='SPA']");
