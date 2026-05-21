@@ -85,6 +85,8 @@ public class HotelBookingController {
 
     @PostMapping("/calculatePrice")
     public String calculatePrice(@RequestParam("roomType") String roomType,
+                                 @RequestParam("checkIn") String checkIn,
+                                 @RequestParam("checkOut") String checkOut,
                                  @RequestParam("daysStayed") int daysStayed,
                                  @RequestParam(value = "extras", required = false) List<Extras> extras,
                                  @RequestParam(value = "petWeight", required = false) Double petWeight,
@@ -111,8 +113,11 @@ public class HotelBookingController {
 
         model.addAttribute("assignedRoomNumber", assignedRoom.getRoomNumber());
         model.addAttribute("selectedRoomType", roomType);
+        model.addAttribute("checkIn", checkIn);
+        model.addAttribute("checkOut", checkOut);
         model.addAttribute("daysStayed", daysStayed);
         model.addAttribute("petWeight", petWeight);
+        model.addAttribute("selectedExtras", extras != null ? extras : new java.util.ArrayList<>());
 
         return "booking";
     }

@@ -221,7 +221,7 @@
             <!-- Room Type Selection -->
             <div class="mb-3">
                 <label class="form-label" for="roomTypeSelect">Room Type</label>
-                <select id="roomTypeSelect" class="form-select" name="roomType" required>
+                <select id="roomTypeSelect" class="form-select" name="roomType" required data-th-value="${selectedRoomType}">
                     <option value="" disabled selected>Select Room Type</option>
                     <option data-th-each="entry : ${roomTypeAvailability}"
                             data-th-value="${entry.key}"
@@ -236,12 +236,12 @@
             <div class="row mb-3">
                     <div class="col">
                     <label class="form-label" for="checkIn">Check-in Date</label>
-                    <input type="date" id="checkIn" class="form-control" required>
+                    <input type="date" id="checkIn" name="checkIn" class="form-control" required data-th-value="${checkIn}">
                     <div id="checkInError" class="text-danger small mt-1" style="display:none;">Check-in date cannot be in the past.</div>
                 </div>
                 <div class="col">
                     <label class="form-label" for="checkOut">Check-out Date</label>
-                    <input type="date" id="checkOut" class="form-control" required>
+                    <input type="date" id="checkOut" name="checkOut" class="form-control" required data-th-value="${checkOut}">
                     <div id="checkOutError" class="text-danger small mt-1" style="display:none;">Check-out date must be after the check-in date.</div>
                 </div>
             </div>
@@ -249,7 +249,7 @@
             <!-- Days Stayed -->
             <div class="mb-3">
                 <label class="form-label" for="daysStayed">Days Stayed</label>
-                <input type="number" id="daysStayed" name="daysStayed" class="form-control" readonly required>
+                <input type="number" id="daysStayed" name="daysStayed" class="form-control" readonly required data-th-value="${daysStayed}">
             </div>
 
             <!-- Extras -->
@@ -259,14 +259,18 @@
                     <!-- SPA checkbox variant -->
                     <div data-th-if="${extra.key.name() == 'SPA'}">
                         <input class="form-check-input extra-checkbox" type="checkbox" name="extras"
-                               data-th-value="${extra.key}" data-th-id="${'extra-' + extra.key}">
+                               data-th-value="${extra.key}"
+                               data-th-id="${'extra-' + extra.key}"
+                               data-th-checked="${selectedExtras != null && selectedExtras.contains(extra.key)}">
                         <label class="form-check-label" data-th-for="${'extra-' + extra.key}"
                                data-th-text="${extra.key} + ' (' + ${extra.value} + ' ₹/session)'"></label>
                     </div>
                     <!-- Other extras (per day) -->
                     <div data-th-unless="${extra.key.name() == 'SPA'}">
                         <input class="form-check-input extra-checkbox" type="checkbox" name="extras"
-                               data-th-value="${extra.key}" data-th-id="${'extra-' + extra.key}">
+                               data-th-value="${extra.key}"
+                               data-th-id="${'extra-' + extra.key}"
+                               data-th-checked="${selectedExtras != null && selectedExtras.contains(extra.key)}">
                         <label class="form-check-label" data-th-for="${'extra-' + extra.key}"
                                data-th-text="${extra.key} + ' (' + ${extra.value} + ' ₹/day)'"></label>
                     </div>
@@ -275,7 +279,7 @@
                 <!-- SPA sessions selector (1-3 sessions). Shown only when SPA is selected -->
                 <div id="spa-sessions" class="mt-2" style="display:none;">
                         <label class="form-label" for="spaSessions">Spa Sessions</label>
-                            <select class="form-select" name="spaSessions" id="spaSessions">
+                            <select class="form-select" name="spaSessions" id="spaSessions" data-th-value="${spaSessions}">
                         <option value="1">1 session</option>
                         <option value="2">2 sessions</option>
                         <option value="3">3 sessions</option>
@@ -286,7 +290,7 @@
             <!-- Pet Weight -->
             <div class="mb-3">
                 <label class="form-label">Pet Weight (kg)</label>
-                <input type="number" step="0.1" class="form-control" name="petWeight" placeholder="Optional">
+                <input type="number" step="0.1" class="form-control" name="petWeight" placeholder="Optional" data-th-value="${petWeight}">
             </div>
 
             <!-- Calculate Price Button -->
@@ -439,6 +443,10 @@
     const spaCheckbox = document.querySelector("input.extra-checkbox[value='SPA']");
     const spaContainer = document.getElementById('spa-sessions');
     if (spaCheckbox) {
+        // Check if SPA is already selected (from previous calculation) and show container
+        if (spaCheckbox.checked) {
+            spaContainer.style.display = 'block';
+        }
         spaCheckbox.addEventListener('change', function() {
             if (this.checked) spaContainer.style.display = 'block';
             else spaContainer.style.display = 'none';
