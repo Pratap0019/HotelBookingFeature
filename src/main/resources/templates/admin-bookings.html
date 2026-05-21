@@ -23,6 +23,18 @@
         .status-serving    { background-color: #ffc107; color: #212529; }
         .status-checkedout { background-color: #198754; color: #fff; }
         .status-cancelled  { background-color: #dc3545; color: #fff; }
+        .status-legend .badge {
+            margin-right: 8px;
+            margin-bottom: 6px;
+        }
+        .action-btn-fixed {
+            min-width: 130px;
+        }
+        .status-badge-fixed {
+            width: 130px;
+            text-align: center;
+            display: inline-block;
+        }
 
          .header {
             background-size: cover;
@@ -174,6 +186,13 @@
         </div>
     </div>
 
+    <div class="status-legend mb-3">
+        <span class="badge status-confirmed">Confirmed</span>
+        <span class="badge status-serving">Serving Guests</span>
+        <span class="badge status-checkedout">Checked Out</span>
+        <span class="badge status-cancelled">Cancelled</span>
+    </div>
+
     <div data-th-if="${#lists.isEmpty(bookings)}">
         <div class="alert alert-info">No bookings yet.</div>
     </div>
@@ -200,28 +219,28 @@
             <td data-th-text="${b.checkInDate}"></td>
             <td data-th-text="${b.checkOutDate}"></td>
             <td>
-                <span data-th-if="${b.status.name() == 'CONFIRMED'}" class="badge status-confirmed">Confirmed</span>
-                <span data-th-if="${b.status.name() == 'CHECKED_IN'}" class="badge status-serving">Serving Guests</span>
-                <span data-th-if="${b.status.name() == 'CHECKED_OUT'}" class="badge status-checkedout">Checked Out</span>
-                <span data-th-if="${b.status.name() == 'CANCELLED'}" class="badge status-cancelled">Cancelled</span>
+                <span data-th-if="${b.status.name() == 'CONFIRMED'}" class="badge status-confirmed status-badge-fixed">Confirmed</span>
+                <span data-th-if="${b.status.name() == 'CHECKED_IN'}" class="badge status-serving status-badge-fixed">Serving Guests</span>
+                <span data-th-if="${b.status.name() == 'CHECKED_OUT'}" class="badge status-checkedout status-badge-fixed">Checked Out</span>
+                <span data-th-if="${b.status.name() == 'CANCELLED'}" class="badge status-cancelled status-badge-fixed">Cancelled</span>
             </td>
             <td data-th-text="'₹' + ${b.bill.totalAmount}"></td>
             <td>
                 <form data-th-if="${b.status.name() == 'CONFIRMED'}" data-th-action="@{/admin/checkIn}" method="post" style="display:inline-block">
                     <input type="hidden" name="bookingId" data-th-value="${b.bookingId}">
-                    <button class="btn btn-sm btn-warning" type="submit">Checked In</button>
+                    <button class="btn btn-sm btn-warning action-btn-fixed" type="submit">Check In</button>
                 </form>
                 <form data-th-if="${b.status.name() == 'CONFIRMED'}" data-th-action="@{/admin/cancelBooking}" method="post" style="display:inline-block">
                     <input type="hidden" name="bookingId" data-th-value="${b.bookingId}">
-                    <button class="btn btn-sm btn-danger" type="submit">Cancel Booking</button>
+                    <button class="btn btn-sm btn-danger action-btn-fixed" type="submit">Cancel Booking</button>
                 </form>
 
                 <form data-th-if="${b.status.name() == 'CHECKED_IN'}" data-th-action="@{/admin/checkOut}" method="post" style="display:inline-block">
                     <input type="hidden" name="bookingId" data-th-value="${b.bookingId}">
-                    <button class="btn btn-sm btn-success" type="submit">Check Out</button>
+                    <button class="btn btn-sm btn-success action-btn-fixed" type="submit">Check Out</button>
                 </form>
 
-                <button data-th-if="${b.status.name() == 'CHECKED_OUT'}" class="btn btn-sm btn-info" data-bs-toggle="modal"
+                <button data-th-if="${b.status.name() == 'CHECKED_OUT'}" class="btn btn-sm btn-info action-btn-fixed" data-bs-toggle="modal"
                         th:data-bs-target="'#billModal-' + ${b.bookingId}"
                         title="View Price Breakdown">
                     View Bill

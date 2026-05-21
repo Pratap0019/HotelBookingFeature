@@ -113,6 +113,20 @@
             background-color: #8b5a05;
             border-color: #8b5a05;
         }
+        .btn-check-availability {
+            background-color: #B8860B;
+            border-color: #B8860B;
+            color: #fff;
+            font-size: 0.95rem;
+            padding: 0.35rem 0.9rem;
+        }
+        .btn-check-availability:hover,
+        .btn-check-availability:focus,
+        .btn-check-availability:active {
+            background-color: #8b5a05;
+            border-color: #8b5a05;
+            color: #fff;
+        }
 
         /* Stylish booking page title */
         .booking-title {
@@ -251,9 +265,16 @@
             </div>
 
             <!-- Days Stayed -->
-            <div class="mb-3">
-                <label class="form-label" for="daysStayed">Days Stayed</label>
-                <input type="number" id="daysStayed" name="daysStayed" class="form-control" readonly required data-th-value="${daysStayed}">
+            <div class="row mb-3 align-items-end">
+                <div class="col-md-8">
+                    <label class="form-label" for="daysStayed">Days Stayed</label>
+                    <input type="number" id="daysStayed" name="daysStayed" class="form-control" readonly required data-th-value="${daysStayed}">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-check-availability" name="action" value="availability">
+                        Check Availability
+                    </button>
+                </div>
             </div>
 
             <!-- Room Type Selection (enabled only after availability check) -->
@@ -318,9 +339,6 @@
 
             <!-- Step Buttons -->
             <div class="text-center">
-                <button type="submit" class="btn btn-outline-primary btn-lg me-2" name="action" value="availability">
-                    Check Availability
-                </button>
                 <button type="submit" class="btn btn-primary btn-lg" name="action" value="calculate"
                         data-th-disabled="${availabilityChecked == null || !availabilityChecked}">
                     Calculate Price
