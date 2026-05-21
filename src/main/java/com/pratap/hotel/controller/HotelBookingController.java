@@ -55,6 +55,41 @@ public class HotelBookingController {
         return "homepage";
     }
 
+    @PostMapping("/searchBookings/cancel")
+    public String cancelBookingFromSearch(@RequestParam("bookingId") String bookingId,
+                                          @RequestParam("mobileNumber") String mobileNumber,
+                                          Model model) {
+        addHomepageBaseAttributes(model);
+
+        String normalizedInput = normalizeToTenDigits(mobileNumber);
+        model.addAttribute("searchPerformed", true);
+        model.addAttribute("searchedMobile", normalizedInput);
+
+        BookingDetails targetBooking = findBookingById(bookingId);
+        if (targetBooking == null) {
+            model.addAttribute("searchError", "Booking not found.");
+        } else {
+            String bookingMobile = normalizeToTenDigits(targetBooking.getGuest().getContactNumber());
+            if (!bookingMobile.equals(normalizedInput)) {
+                model.addAttribute("searchError", "You can cancel only bookings linked to the searched mobile number.");
+            } else if (targetBooking.getStatus() != BookingStatus.CONFIRMED) {
+                model.addAttribute("searchError", "Only confirmed bookings can be cancelled.");
+            } else {
+                targetBooking.setStatus(BookingStatus.CANCELLED);
+                model.addAttribute("searchSuccess", "Booking " + bookingId + " has been cancelled.");
+            }
+        }
+
+        List<BookingRecord> matchedBookings = buildAllBookingRecords().stream()
+                .filter(record -> normalizeToTenDigits(record.getContactNumber()).equals(normalizedInput))
+                .sorted(Comparator.comparing(BookingRecord::getCheckInDate).reversed())
+                .collect(Collectors.toList());
+
+        model.addAttribute("searchedBookings", matchedBookings);
+        model.addAttribute("scrollTo", "searchResultsSection");
+        return "homepage";
+    }
+
     @GetMapping("/booking")
     public String bookingPage(Model model) {
         model.addAttribute("rooms", HotelData.ROOMS);
@@ -455,6 +490,17 @@ public class HotelBookingController {
             return digits.substring(digits.length() - 10);
         }
         return digits;
+    }
+
+    private BookingDetails findBookingById(String bookingId) {
+        for (List<BookingDetails> bookings : HotelData.BOOKINGS.values()) {
+            for (BookingDetails booking : bookings) {
+                if (booking.getBookingId().equals(bookingId)) {
+                    return booking;
+                }
+            }
+        }
+        return null;
     }
 
     private boolean isRoomAvailableForRange(int roomNumber, LocalDate checkIn, LocalDate checkOut) {

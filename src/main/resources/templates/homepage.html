@@ -528,6 +528,9 @@
             </form>
 
             <div th:if="${searchPerformed}">
+                <div class="alert alert-success" th:if="${searchSuccess}" th:text="${searchSuccess}"></div>
+                <div class="alert alert-danger" th:if="${searchError}" th:text="${searchError}"></div>
+
                 <div class="alert alert-info" th:if="${#lists.isEmpty(searchedBookings)}">
                     No bookings found for +91-<span th:text="${searchedMobile}"></span>.
                 </div>
@@ -542,6 +545,7 @@
                         <th>Check-out</th>
                         <th>Status</th>
                         <th>Total (₹)</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -558,6 +562,14 @@
                             <span th:if="${b.status.name() == 'CANCELLED'}" class="badge status-cancelled">Cancelled</span>
                         </td>
                         <td th:text="${#numbers.formatDecimal(b.bill.totalAmount, 1, 2)}"></td>
+                        <td>
+                            <form th:if="${b.status.name() == 'CONFIRMED'}" method="post" action="/searchBookings/cancel" class="d-inline">
+                                <input type="hidden" name="bookingId" th:value="${b.bookingId}">
+                                <input type="hidden" name="mobileNumber" th:value="${searchedMobile}">
+                                <button type="submit" class="btn btn-sm btn-danger">Cancel Booking</button>
+                            </form>
+                            <span th:if="${b.status.name() != 'CONFIRMED'}" class="text-muted">-</span>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
