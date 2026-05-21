@@ -327,11 +327,25 @@
             <div class="row g-2 mb-3">
                 <div class="col-md-6">
                     <label class="form-label">Full Name</label>
-                    <input type="text" name="guestName" class="form-control" placeholder="Guest full name" required>
+                    <input type="text" id="guestName" name="guestName" class="form-control"
+                           placeholder="Guest full name"
+                           pattern="[A-Za-z ]+"
+                           title="Name must contain only letters and spaces"
+                           required>
+                    <div id="nameError" class="text-danger small mt-1" style="display:none;">Name can only contain letters (A–Z) and spaces.</div>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Contact Number (with country code)</label>
-                    <input type="tel" name="contactNumber" class="form-control" placeholder="+91-9876543210" required>
+                    <label class="form-label">Contact Number</label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background:#f8f5ee; color:#B8860B; font-weight:600; border-color:#ced4da;">+91</span>
+                        <input type="tel" id="mobileNumber" class="form-control" placeholder="10-digit mobile number"
+                               maxlength="10" pattern="[6-9][0-9]{9}"
+                               title="Enter a valid 10-digit Indian mobile number"
+                               required>
+                        <!-- Hidden field that carries the combined value to the server -->
+                        <input type="hidden" name="contactNumber" id="contactNumberHidden">
+                    </div>
+                    <div id="mobileError" class="text-danger small mt-1" style="display:none;">Please enter a valid 10-digit mobile number.</div>
                 </div>
             </div>
 
@@ -419,6 +433,83 @@
             if (this.checked) spaContainer.style.display = 'block';
             else spaContainer.style.display = 'none';
         });
+    }
+
+    // Guest name validation: only letters and spaces, cannot be empty
+    const guestNameInput = document.getElementById("guestName");
+    const nameError = document.getElementById("nameError");
+    const nameRegex = /^[A-Za-z ]+$/;
+
+    if (guestNameInput) {
+        // Strip any disallowed characters as the user types
+        guestNameInput.addEventListener("input", function () {
+            this.value = this.value.replace(/[^A-Za-z ]/g, "");
+        });
+
+        guestNameInput.addEventListener("blur", function () {
+            const val = this.value.trim();
+            if (val.length === 0 || !nameRegex.test(val)) {
+                nameError.style.display = "block";
+            } else {
+                nameError.style.display = "none";
+            }
+        });
+
+        // Also validate on form submit (reuse confirmForm reference below)
+    }
+
+    // Mobile number validation: strictly 10 digits, starting with 6-9
+    const mobileInput = document.getElementById("mobileNumber");
+    const mobileError = document.getElementById("mobileError");
+    const contactHidden = document.getElementById("contactNumberHidden");
+
+    if (mobileInput) {
+        // Allow only numeric input
+        mobileInput.addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, "").slice(0, 10);
+        });
+
+        mobileInput.addEventListener("blur", function () {
+            const val = this.value;
+            if (val.length !== 10 || !/^[6-9]/.test(val)) {
+                mobileError.style.display = "block";
+            } else {
+                mobileError.style.display = "none";
+            }
+        });
+
+        // Before form submit, copy +91-<number> into the hidden field
+        const confirmForm = mobileInput.closest("form");
+        if (confirmForm) {
+            confirmForm.addEventListener("submit", function (e) {
+                let valid = true;
+
+                // Validate name
+                if (guestNameInput) {
+                    const nameVal = guestNameInput.value.trim();
+                    if (nameVal.length === 0 || !nameRegex.test(nameVal)) {
+                        nameError.style.display = "block";
+                        guestNameInput.focus();
+                        valid = false;
+                    } else {
+                        nameError.style.display = "none";
+                    }
+                }
+
+                // Validate mobile
+                const val = mobileInput.value;
+                if (val.length !== 10 || !/^[6-9]/.test(val)) {
+                    mobileError.style.display = "block";
+                    if (valid) mobileInput.focus();
+                    valid = false;
+                } else {
+                    mobileError.style.display = "none";
+                    contactHidden.value = "+91-" + val;
+                }
+
+                if (!valid) e.preventDefault();
+            });
+        }
     }
 </script>
 
