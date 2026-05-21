@@ -179,6 +179,21 @@
             color: #8b6914;
             font-size: 13px;
         }
+        .gst-info {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            margin-left: 6px;
+            border-radius: 50%;
+            background: #6c757d;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: help;
+            line-height: 1;
+        }
     </style>
 </head>
 <body>
@@ -321,8 +336,14 @@
             </tr>
             </thead>
             <tbody>
-            <tr data-th-each="entry : ${bill.breakdown}">
-                <td data-th-text="${entry.key}"></td>
+            <tr data-th-each="entry : ${bill.breakdown}"
+                data-th-style="${entry.key == 'Subtotal'} ? 'background-color: #f2f2f2;' : ''">
+                <td>
+                    <span data-th-text="${entry.key}"></span>
+                    <span data-th-if="${entry.key == 'GST'}"
+                          class="gst-info"
+                          title="As per indian income tax rule rooms priced up to ₹7,500 attract a 5% GST (without Input Tax Credit), while rooms priced above ₹7,500 are taxed at 18% GST (with ITC eligibility)">i</span>
+                </td>
                 <td data-th-text="${bill.calculationDetails[entry.key]}"></td>
                 <td data-th-text="${entry.value}"></td>
             </tr>

@@ -12,13 +12,20 @@ public class HotelTest {
     // SINGLE: 2000, DOUBLE: 3500, SUITE: 5000
     // Extras: MATTRESS=500/day, SPA=1500/session, GymPASS=500/day, PoolPASS=500/day
     // Pet fees: under8kg=200, under15kg=350, over15kg=500
-    // Service charge: 10% of subtotal
+    // Service charge: 3% of base subtotal
+    // GST: 5% for subtotal <= 7500, else 18%
+
+    private double expectedTotal(double baseSubtotal) {
+        double subtotal = baseSubtotal + baseSubtotal * 0.03;
+        double gstRate = subtotal <= 7500 ? 0.05 : 0.18;
+        return subtotal + (subtotal * gstRate);
+    }
 
     @Test
     void testSingleRoomNoExtrasNoPet() {
         Bill bill = SunMoonResort.calculateBill(101, 1, null, null);
         double base = 2000.0;
-        double expected = base + base * 0.1;
+        double expected = expectedTotal(base);
         Assertions.assertEquals(expected, bill.getTotalAmount(), 0.01);
     }
 
@@ -26,7 +33,7 @@ public class HotelTest {
     void testDoubleRoomOneDay() {
         Bill bill = SunMoonResort.calculateBill(102, 1, null, null);
         double base = 3500.0;
-        double expected = base + base * 0.1;
+        double expected = expectedTotal(base);
         Assertions.assertEquals(expected, bill.getTotalAmount(), 0.01);
     }
 
@@ -34,7 +41,7 @@ public class HotelTest {
     void testSuiteTwoDays() {
         Bill bill = SunMoonResort.calculateBill(203, 2, null, null);
         double roomCharge = 5000.0 * 2;
-        double expected = roomCharge + roomCharge * 0.1;
+        double expected = expectedTotal(roomCharge);
         Assertions.assertEquals(expected, bill.getTotalAmount(), 0.01);
     }
 
@@ -44,7 +51,7 @@ public class HotelTest {
         double base = 2000.0;
         double extra = 500.0;
         double subtotal = base + extra;
-        double expected = subtotal + subtotal * 0.1;
+        double expected = expectedTotal(subtotal);
         Assertions.assertEquals(expected, bill.getTotalAmount(), 0.01);
     }
 
@@ -54,7 +61,7 @@ public class HotelTest {
         double base = 2000.0;
         double extras = 500.0 + 500.0;
         double subtotal = base + extras;
-        double expected = subtotal + subtotal * 0.1;
+        double expected = expectedTotal(subtotal);
         Assertions.assertEquals(expected, bill.getTotalAmount(), 0.01);
     }
 
@@ -64,7 +71,7 @@ public class HotelTest {
         double base = 2000.0;
         double pet = 200.0;
         double subtotal = base + pet;
-        double expected = subtotal + subtotal * 0.1;
+        double expected = expectedTotal(subtotal);
         Assertions.assertEquals(expected, bill.getTotalAmount(), 0.01);
     }
 
@@ -74,7 +81,7 @@ public class HotelTest {
         double base = 2000.0;
         double pet = 350.0;
         double subtotal = base + pet;
-        double expected = subtotal + subtotal * 0.1;
+        double expected = expectedTotal(subtotal);
         Assertions.assertEquals(expected, bill.getTotalAmount(), 0.01);
     }
 
@@ -84,7 +91,7 @@ public class HotelTest {
         double base = 2000.0;
         double pet = 500.0;
         double subtotal = base + pet;
-        double expected = subtotal + subtotal * 0.1;
+        double expected = expectedTotal(subtotal);
         Assertions.assertEquals(expected, bill.getTotalAmount(), 0.01);
     }
 
@@ -92,7 +99,7 @@ public class HotelTest {
     void testFiveDayStay() {
         Bill bill = SunMoonResort.calculateBill(101, 5, null, null);
         double roomCharge = 2000.0 * 5;
-        double expected = roomCharge + roomCharge * 0.1;
+        double expected = expectedTotal(roomCharge);
         Assertions.assertEquals(expected, bill.getTotalAmount(), 0.01);
     }
 
@@ -104,7 +111,7 @@ public class HotelTest {
         double extras = (500.0 + 500.0) * 2;
         double pet = 350.0;
         double subtotal = roomCharge + extras + pet;
-        double expected = subtotal + subtotal * 0.1;
+        double expected = expectedTotal(subtotal);
         Assertions.assertEquals(expected, bill.getTotalAmount(), 0.01);
     }
 
@@ -114,7 +121,7 @@ public class HotelTest {
         double base = 2000.0;
         double spa = 1500.0 * 2;
         double subtotal = base + spa;
-        double expected = subtotal + subtotal * 0.1;
+        double expected = expectedTotal(subtotal);
         Assertions.assertEquals(expected, bill.getTotalAmount(), 0.01);
     }
 

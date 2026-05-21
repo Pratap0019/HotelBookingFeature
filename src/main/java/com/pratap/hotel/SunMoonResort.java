@@ -67,14 +67,25 @@ public class SunMoonResort {
         }
 
         // Subtotal before service charge
-        double subtotal = roomCharge + extrasCharge + petFee;
+        double baseSubtotal = roomCharge + extrasCharge + petFee;
 
-        // Service charge (10% of subtotal)
-        double serviceCharge = subtotal * 0.1;
+        // Service charge (3% of base subtotal)
+        double serviceCharge = baseSubtotal * 0.03;
         breakdown.put("Service Charge", serviceCharge);
-        calculationDetails.put("Service Charge", String.format("10%% of subtotal = ₹%.2f", serviceCharge));
+        calculationDetails.put("Service Charge", String.format("3%% of base subtotal = ₹%.2f", serviceCharge));
 
-        double total = subtotal + serviceCharge;
+        // Subtotal after service charge, before GST
+        double subtotal = baseSubtotal + serviceCharge;
+        breakdown.put("Subtotal", subtotal);
+        calculationDetails.put("Subtotal", String.format("Room + Extras + Pet + Service = ₹%.2f", subtotal));
+
+        // GST slab based on subtotal: up to 7500 -> 5%, above 7500 -> 18%
+        double gstRate = subtotal <= 7500 ? 0.05 : 0.18;
+        double gstAmount = subtotal * gstRate;
+        breakdown.put("GST", gstAmount);
+        calculationDetails.put("GST", String.format("%.0f%% of subtotal = ₹%.2f", gstRate * 100, gstAmount));
+
+        double total = subtotal + gstAmount;
 
         return new Bill(total, breakdown, calculationDetails);
     }
