@@ -392,6 +392,8 @@
                     <th>Base Rate / Night</th>
                     <th>Balcony</th>
                     <th>Nature's View</th>
+                    <th>WiFi <span class="badge bg-success ms-1">Free</span></th>
+                    <th>Mini-Fridge <span class="badge bg-success ms-1">Free</span></th>
                     <th>Available Rooms</th>
                 </tr>
                 </thead>
@@ -410,6 +412,18 @@
                     <td>
                         <span data-th-if="${entry.value['hasNatureView']}" class="badge badge-status-yes">Yes</span>
                         <span data-th-unless="${entry.value['hasNatureView']}" class="badge badge-status-no">No</span>
+                    </td>
+
+                    <!-- WiFi (free for all) -->
+                    <td>
+                        <span data-th-if="${entry.value['hasWifi']}" class="badge badge-status-yes">Included</span>
+                        <span data-th-unless="${entry.value['hasWifi']}" class="badge badge-status-no">No</span>
+                    </td>
+
+                    <!-- Mini-Fridge (free for DOUBLE and SUITE) -->
+                    <td>
+                        <span data-th-if="${entry.value['hasMinifridge']}" class="badge badge-status-yes">Included</span>
+                        <span data-th-unless="${entry.value['hasMinifridge']}" class="badge badge-status-no">Not Available</span>
                     </td>
 
                     <!-- Available count out of total -->

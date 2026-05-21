@@ -23,20 +23,15 @@ public class SunMoonResort {
 
         double baseRate = HotelData.ROOM_RATES.get(room.getRoomType());
         double dailyRate = baseRate;
-
-        // Apply surcharges to base rate
-        if (room.hasNatureView()) {
-            dailyRate += baseRate * 0.2;
-        }
-        if (room.hasBalcony()) {
-            dailyRate += baseRate * 0.1;
-        }
+        // No surcharges — flat rate per room type
 
         Map<String, Double> breakdown = new LinkedHashMap<>();
+        Map<String, String> calculationDetails = new LinkedHashMap<>();
 
         // Room charge for all days
         double roomCharge = dailyRate * daysStayed;
         breakdown.put("Room Charge", roomCharge);
+        calculationDetails.put("Room Charge", String.format("₹%.2f/day × %d days", dailyRate, daysStayed));
 
         // Extras
         double extrasCharge = 0.0;
@@ -44,12 +39,17 @@ public class SunMoonResort {
             for (Extras extra : selectedExtras) {
                 if (extra == Extras.SPA) {
                     int sessions = (spaSessions != null && spaSessions >= 1) ? spaSessions : 1;
-                    double extraCharge = HotelData.EXTRAS_RATE.get(extra) * sessions;
-                    breakdown.put(extra.name() + " (" + sessions + " session" + (sessions > 1 ? "s" : "") + ")", extraCharge);
+                    double ratePerSession = HotelData.EXTRAS_RATE.get(extra);
+                    double extraCharge = ratePerSession * sessions;
+                    String key = extra.getDisplayName() + " (" + sessions + " session" + (sessions > 1 ? "s" : "") + ")";
+                    breakdown.put(key, extraCharge);
+                    calculationDetails.put(key, String.format("₹%.2f × %d session%s", ratePerSession, sessions, sessions > 1 ? "s" : ""));
                     extrasCharge += extraCharge;
                 } else {
-                    double extraCharge = HotelData.EXTRAS_RATE.get(extra) * daysStayed;
-                    breakdown.put(extra.name(), extraCharge);
+                    double ratePerDay = HotelData.EXTRAS_RATE.get(extra);
+                    double extraCharge = ratePerDay * daysStayed;
+                    breakdown.put(extra.getDisplayName(), extraCharge);
+                    calculationDetails.put(extra.getDisplayName(), String.format("₹%.2f/day × %d days", ratePerDay, daysStayed));
                     extrasCharge += extraCharge;
                 }
             }
@@ -63,6 +63,7 @@ public class SunMoonResort {
             else petFee = HotelData.PET_FEE_RATES.get("over15kg");
             // Pet fee is applied per stay in this implementation (as per project conventions)
             breakdown.put("Pet Fee", petFee);
+            calculationDetails.put("Pet Fee", String.format("₹%.2f (one-time charge)", petFee));
         }
 
         // Subtotal before service charge
@@ -71,10 +72,11 @@ public class SunMoonResort {
         // Service charge (10% of subtotal)
         double serviceCharge = subtotal * 0.1;
         breakdown.put("Service Charge", serviceCharge);
+        calculationDetails.put("Service Charge", String.format("10%% of subtotal = ₹%.2f", serviceCharge));
 
         double total = subtotal + serviceCharge;
 
-        return new Bill(total, breakdown);
+        return new Bill(total, breakdown, calculationDetails);
     }
 
 

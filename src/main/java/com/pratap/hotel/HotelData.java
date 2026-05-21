@@ -37,13 +37,11 @@ public class HotelData {
         ROOMS.add(new Room(306, RoomType.SUITE, false, true, true));
 
         // Room rates
-        ROOM_RATES.put(RoomType.SINGLE, 1500.0);
-        ROOM_RATES.put(RoomType.DOUBLE, 2500.0);
-        ROOM_RATES.put(RoomType.SUITE, 4000.0);
+        ROOM_RATES.put(RoomType.SINGLE, 2000.0);
+        ROOM_RATES.put(RoomType.DOUBLE, 3500.0);
+        ROOM_RATES.put(RoomType.SUITE, 5000.0);
 
-        // Extras
-        EXTRAS_RATE.put(Extras.MINIFRIDGE, 500.0);
-        EXTRAS_RATE.put(Extras.WIFI, 100.0);
+        // Extras (WIFI and MINIFRIDGE are free — not listed here)
         EXTRAS_RATE.put(Extras.MATTRESS, 500.0);
         EXTRAS_RATE.put(Extras.SPA, 1500.0);
         EXTRAS_RATE.put(Extras.GymPASS, 500.0);

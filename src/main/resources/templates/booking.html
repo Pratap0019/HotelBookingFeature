@@ -224,7 +224,7 @@
                 <select id="roomTypeSelect" class="form-select" name="roomType" required data-th-value="${selectedRoomType}">
                     <option value="" disabled selected>Select Room Type</option>
                     <option data-th-each="entry : ${roomTypeAvailability}"
-                            data-th-value="${entry.key}"
+                            data-th-value="${entry.key.name()}"
                             data-th-disabled="${entry.value == 0}"
                             data-th-text="${entry.key} + ' — ' + ${entry.value} + ' room' + (${entry.value} != 1 ? 's' : '') + ' available'">
                     </option>
@@ -259,19 +259,19 @@
                     <!-- SPA checkbox variant -->
                     <div data-th-if="${extra.key.name() == 'SPA'}">
                         <input class="form-check-input extra-checkbox" type="checkbox" name="extras"
-                               data-th-value="${extra.key}"
-                               data-th-id="${'extra-' + extra.key}"
+                               data-th-value="${extra.key.name()}"
+                               data-th-id="${'extra-' + extra.key.name()}"
                                data-th-checked="${selectedExtras != null && selectedExtras.contains(extra.key)}">
-                        <label class="form-check-label" data-th-for="${'extra-' + extra.key}"
+                        <label class="form-check-label" data-th-for="${'extra-' + extra.key.name()}"
                                data-th-text="${extra.key} + ' (' + ${extra.value} + ' ₹/session)'"></label>
                     </div>
                     <!-- Other extras (per day) -->
                     <div data-th-unless="${extra.key.name() == 'SPA'}">
                         <input class="form-check-input extra-checkbox" type="checkbox" name="extras"
-                               data-th-value="${extra.key}"
-                               data-th-id="${'extra-' + extra.key}"
+                               data-th-value="${extra.key.name()}"
+                               data-th-id="${'extra-' + extra.key.name()}"
                                data-th-checked="${selectedExtras != null && selectedExtras.contains(extra.key)}">
-                        <label class="form-check-label" data-th-for="${'extra-' + extra.key}"
+                        <label class="form-check-label" data-th-for="${'extra-' + extra.key.name()}"
                                data-th-text="${extra.key} + ' (' + ${extra.value} + ' ₹/day)'"></label>
                     </div>
                 </div>
@@ -316,16 +316,18 @@
             <thead class="table-dark">
             <tr>
                 <th>Item</th>
+                <th>Calculation</th>
                 <th>Charge (₹)</th>
             </tr>
             </thead>
             <tbody>
             <tr data-th-each="entry : ${bill.breakdown}">
                 <td data-th-text="${entry.key}"></td>
+                <td data-th-text="${bill.calculationDetails[entry.key]}"></td>
                 <td data-th-text="${entry.value}"></td>
             </tr>
             <tr class="table-success">
-                <td><strong>Total</strong></td>
+                <td colspan="2"><strong>Total</strong></td>
                 <td><strong data-th-text="${bill.getTotalAmount}"></strong></td>
             </tr>
             </tbody>

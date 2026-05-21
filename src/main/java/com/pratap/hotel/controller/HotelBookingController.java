@@ -171,7 +171,7 @@ public class HotelBookingController {
 
     /**
      * Builds a per-type summary map used on the homepage.
-     * Each entry: RoomType → { available, total, hasBalcony, hasNatureView, rate }
+     * Each entry: RoomType → { available, total, hasBalcony, hasNatureView, hasWifi, hasMinifridge, rate }
      */
     private Map<RoomType, Map<String, Object>> buildRoomTypeSummary() {
         Map<RoomType, Map<String, Object>> summary = new java.util.LinkedHashMap<>();
@@ -187,6 +187,10 @@ public class HotelBookingController {
             info.put("total", total);
             info.put("hasBalcony", sample != null && sample.hasBalcony());
             info.put("hasNatureView", sample != null && sample.hasNatureView());
+            // WiFi is free for ALL room types
+            info.put("hasWifi", true);
+            // Mini-fridge is free for DOUBLE and SUITE only
+            info.put("hasMinifridge", rt == RoomType.DOUBLE || rt == RoomType.SUITE);
             info.put("rate", HotelData.ROOM_RATES.getOrDefault(rt, 0.0));
             summary.put(rt, info);
         }
