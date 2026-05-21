@@ -6,6 +6,8 @@ import com.pratap.hotel.model.Bill;
 import com.pratap.hotel.model.Extras;
 import com.pratap.hotel.model.Guest;
 import com.pratap.hotel.model.BookingRecord;
+import com.pratap.hotel.model.Room;
+import com.pratap.hotel.model.RoomType;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -13,18 +15,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class HotelBookingController {
 
     @GetMapping("/")
     public String showIndex(Model model) {
-        // Add data to the model
         model.addAttribute("rooms", HotelData.ROOMS);
         model.addAttribute("roomRates", HotelData.ROOM_RATES);
         model.addAttribute("extrasRate", HotelData.EXTRAS_RATE);
         model.addAttribute("petFeeRates", HotelData.PET_FEE_RATES);
-
+        model.addAttribute("roomTypeSummary", buildRoomTypeSummary());
         return "homepage";
     }
 
@@ -34,6 +37,7 @@ public class HotelBookingController {
         model.addAttribute("roomRates", HotelData.ROOM_RATES);
         model.addAttribute("extrasRate", HotelData.EXTRAS_RATE);
         model.addAttribute("petFeeRates", HotelData.PET_FEE_RATES);
+        model.addAttribute("roomTypeAvailability", getRoomTypeAvailability());
         return "booking";  // booking.html
     }
 
@@ -80,23 +84,33 @@ public class HotelBookingController {
     }
 
     @PostMapping("/calculatePrice")
-    public String calculatePrice(@RequestParam("roomNumber") int roomNumber,
+    public String calculatePrice(@RequestParam("roomType") String roomType,
                                  @RequestParam("daysStayed") int daysStayed,
                                  @RequestParam(value = "extras", required = false) List<Extras> extras,
                                  @RequestParam(value = "petWeight", required = false) Double petWeight,
                                  @RequestParam(value = "spaSessions", required = false) Integer spaSessions,
                                  Model model) {
 
-        Bill bill = SunMoonResort.calculateBill(roomNumber, daysStayed, extras, petWeight, spaSessions);
+        RoomType type = RoomType.valueOf(roomType);
+
+        // Auto-assign the first available room of the requested type
+        Room assignedRoom = HotelData.ROOMS.stream()
+                .filter(r -> r.getRoomType() == type && !r.isBooked())
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No available rooms of type " + roomType + ". Please choose a different type."));
+
+        Bill bill = SunMoonResort.calculateBill(assignedRoom.getRoomNumber(), daysStayed, extras, petWeight, spaSessions);
 
         model.addAttribute("bill", bill);
         model.addAttribute("rooms", HotelData.ROOMS);
         model.addAttribute("roomRates", HotelData.ROOM_RATES);
         model.addAttribute("extrasRate", HotelData.EXTRAS_RATE);
         model.addAttribute("petFeeRates", HotelData.PET_FEE_RATES);
+        model.addAttribute("roomTypeAvailability", getRoomTypeAvailability());
         model.addAttribute("spaSessions", spaSessions);
 
-        model.addAttribute("roomNumber", roomNumber);
+        model.addAttribute("assignedRoomNumber", assignedRoom.getRoomNumber());
+        model.addAttribute("selectedRoomType", roomType);
         model.addAttribute("daysStayed", daysStayed);
         model.addAttribute("petWeight", petWeight);
 
@@ -123,8 +137,17 @@ public class HotelBookingController {
         model.addAttribute("roomRates", HotelData.ROOM_RATES);
         model.addAttribute("extrasRate", HotelData.EXTRAS_RATE);
         model.addAttribute("petFeeRates", HotelData.PET_FEE_RATES);
+        model.addAttribute("roomTypeAvailability", getRoomTypeAvailability());
 
-        String msg = "Room " + roomNumber + " has been successfully booked!";
+        // Determine the room type for a friendly message
+        String roomTypeName = HotelData.ROOMS.stream()
+                .filter(r -> r.getRoomNumber() == roomNumber)
+                .findFirst()
+                .map(r -> r.getRoomType().name())
+                .orElse("Unknown");
+
+        String msg = "Booking confirmed! You have been assigned Room " + roomNumber
+                + " (" + roomTypeName + ").";
         if (guestName != null && !guestName.isBlank()) {
             msg += " Guest: " + guestName;
             if (contactNumber != null && !contactNumber.isBlank()) msg += " (" + contactNumber + ")";
@@ -134,15 +157,44 @@ public class HotelBookingController {
         return "booking";
     }
 
+    /** Returns a map of RoomType → count of currently available (not booked) rooms */
+    private Map<RoomType, Long> getRoomTypeAvailability() {
+        return HotelData.ROOMS.stream()
+                .filter(r -> !r.isBooked())
+                .collect(Collectors.groupingBy(Room::getRoomType, Collectors.counting()));
+    }
+
+    /**
+     * Builds a per-type summary map used on the homepage.
+     * Each entry: RoomType → { available, total, hasBalcony, hasNatureView, rate }
+     */
+    private Map<RoomType, Map<String, Object>> buildRoomTypeSummary() {
+        Map<RoomType, Map<String, Object>> summary = new java.util.LinkedHashMap<>();
+        for (RoomType rt : new RoomType[]{RoomType.SINGLE, RoomType.DOUBLE, RoomType.SUITE}) {
+            long available = HotelData.ROOMS.stream()
+                    .filter(r -> r.getRoomType() == rt && !r.isBooked()).count();
+            long total = HotelData.ROOMS.stream()
+                    .filter(r -> r.getRoomType() == rt).count();
+            Room sample = HotelData.ROOMS.stream()
+                    .filter(r -> r.getRoomType() == rt).findFirst().orElse(null);
+            Map<String, Object> info = new java.util.LinkedHashMap<>();
+            info.put("available", available);
+            info.put("total", total);
+            info.put("hasBalcony", sample != null && sample.hasBalcony());
+            info.put("hasNatureView", sample != null && sample.hasNatureView());
+            info.put("rate", HotelData.ROOM_RATES.getOrDefault(rt, 0.0));
+            summary.put(rt, info);
+        }
+        return summary;
+    }
+
     @GetMapping("/bookings")
     public String bookingsList(Model model, HttpSession session) {
-        // admin-only: check session
         Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
         if (isAdmin == null || !isAdmin) {
             return "redirect:/admin/login";
         }
 
-        // Build a simple list of BookingRecord for display
         List<BookingRecord> bookingRecords = new java.util.ArrayList<>();
         HotelData.BOOKINGS.forEach((roomNum, guest) -> {
             String roomType = HotelData.ROOMS.stream()
@@ -154,6 +206,8 @@ public class HotelBookingController {
         });
 
         model.addAttribute("bookings", bookingRecords);
+        // Pass full room inventory for admin-only detailed view
+        model.addAttribute("rooms", HotelData.ROOMS);
         return "admin-bookings";
     }
 }

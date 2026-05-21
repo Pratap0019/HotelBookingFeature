@@ -381,41 +381,45 @@
 <!-- Info Section -->
 <div class="info-section">
 
-    <!-- Rooms Table -->
+    <!-- Room Type Summary Table -->
     <div class="card mb-4">
-        <div class="card-header bg-dark text-white">Available Rooms</div>
+        <div class="card-header bg-dark text-white">Room Availability Overview</div>
         <div class="card-body">
             <table class="table table-bordered table-striped align-middle">
                 <thead class="table-dark">
                 <tr>
-                    <th>Room No</th>
-                    <th>Type</th>
+                    <th>Room Type</th>
+                    <th>Base Rate / Night</th>
                     <th>Balcony</th>
-                    <th>nature's View</th>
-                    <th>Status</th>
+                    <th>Nature's View</th>
+                    <th>Available Rooms</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr data-th-each="room : ${rooms}">
-                    <td data-th-text="${room.roomNumber}"></td>
-                    <td data-th-text="${room.roomType}"></td>
+                <tr data-th-each="entry : ${roomTypeSummary}">
+                    <td><strong data-th-text="${entry.key}"></strong></td>
+                    <td data-th-text="'₹ ' + ${entry.value['rate']}"></td>
 
                     <!-- Balcony -->
                     <td>
-                        <span data-th-if="${room.hasBalcony()}" class="badge badge-status-yes">Yes</span>
-                        <span data-th-if="${!room.hasBalcony()}" class="badge badge-status-no">No</span>
+                        <span data-th-if="${entry.value['hasBalcony']}" class="badge badge-status-yes">Yes</span>
+                        <span data-th-unless="${entry.value['hasBalcony']}" class="badge badge-status-no">No</span>
                     </td>
 
                     <!-- Nature View -->
                     <td>
-                        <span data-th-if="${room.hasNatureView()}" class="badge badge-status-yes">Yes</span>
-                        <span data-th-if="${!room.hasNatureView()}" class="badge badge-status-no">No</span>
+                        <span data-th-if="${entry.value['hasNatureView']}" class="badge badge-status-yes">Yes</span>
+                        <span data-th-unless="${entry.value['hasNatureView']}" class="badge badge-status-no">No</span>
                     </td>
 
-                    <!-- Booked -->
+                    <!-- Available count out of total -->
                     <td>
-                        <span data-th-if="${room.booked}" class="badge badge-status-booked">Booked</span>
-                        <span data-th-if="${!room.booked}" class="badge badge-status-available">Available</span>
+                        <span data-th-if="${entry.value['available'] > 0}"
+                              class="badge badge-status-available"
+                              data-th-text="${entry.value['available']} + ' / ' + ${entry.value['total']} + ' available'">
+                        </span>
+                        <span data-th-unless="${entry.value['available'] > 0}"
+                              class="badge badge-status-booked">Fully Booked</span>
                     </td>
                 </tr>
                 </tbody>

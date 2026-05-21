@@ -14,6 +14,11 @@
             font-family: 'Poppins', sans-serif;
             padding-top: 0;
         }
+        .badge-available { background-color: #B8860B; color: #fff; }
+        .badge-booked    { background-color: silver;  color: #212529; }
+        .badge-yes       { background-color: #B8860B; color: #fff; }
+        .badge-no        { background-color: silver;  color: #212529; }
+
          .header {
             background-size: cover;
             background-position: center;
@@ -175,6 +180,42 @@
         </tr>
         </tbody>
      </table>
+
+    <!-- Full Room Inventory (admin-only) -->
+    <h4 class="booking-title mt-5 mb-3">Full Room Inventory</h4>
+    <div class="card mb-4">
+        <div class="card-body p-0">
+            <table class="table table-bordered table-striped align-middle mb-0">
+                <thead class="table-dark">
+                <tr>
+                    <th>Room No</th>
+                    <th>Type</th>
+                    <th>Balcony</th>
+                    <th>Nature's View</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-th-each="room : ${rooms}">
+                    <td data-th-text="${room.roomNumber}"></td>
+                    <td data-th-text="${room.roomType}"></td>
+                    <td>
+                        <span data-th-if="${room.hasBalcony()}"  class="badge badge-yes">Yes</span>
+                        <span data-th-unless="${room.hasBalcony()}" class="badge badge-no">No</span>
+                    </td>
+                    <td>
+                        <span data-th-if="${room.hasNatureView()}"  class="badge badge-yes">Yes</span>
+                        <span data-th-unless="${room.hasNatureView()}" class="badge badge-no">No</span>
+                    </td>
+                    <td>
+                        <span data-th-if="${room.booked}"  class="badge badge-booked">Booked</span>
+                        <span data-th-unless="${room.booked}" class="badge badge-available">Available</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
  </div>
 
