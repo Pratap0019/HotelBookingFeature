@@ -340,7 +340,7 @@
             <!-- Step Buttons -->
             <div class="text-center">
                 <button type="submit" class="btn btn-primary btn-lg" name="action" value="calculate"
-                        data-th-disabled="${availabilityChecked == null || !availabilityChecked}">
+                        data-th-if="${availabilityChecked != null && availabilityChecked}">
                     Calculate Price
                 </button>
             </div>
