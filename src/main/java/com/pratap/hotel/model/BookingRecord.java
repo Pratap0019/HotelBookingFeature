@@ -6,12 +6,16 @@ public class BookingRecord {
     private final String guestName;
     private final String contactNumber;
     private final String roomType;
+    private final Bill bill;
+    private final int daysStayed;
 
-    public BookingRecord(int roomNumber, String guestName, String contactNumber, String roomType) {
+    public BookingRecord(int roomNumber, String guestName, String contactNumber, String roomType, Bill bill, int daysStayed) {
         this.roomNumber = roomNumber;
         this.guestName = guestName;
         this.contactNumber = contactNumber;
         this.roomType = roomType;
+        this.bill = bill;
+        this.daysStayed = daysStayed;
     }
 
     public int getRoomNumber() {
@@ -28,6 +32,14 @@ public class BookingRecord {
 
     public String getRoomType() {
         return roomType;
+    }
+
+    public Bill getBill() {
+        return bill;
+    }
+
+    public int getDaysStayed() {
+        return daysStayed;
     }
 }
 

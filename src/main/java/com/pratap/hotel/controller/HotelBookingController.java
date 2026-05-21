@@ -6,6 +6,7 @@ import com.pratap.hotel.model.Bill;
 import com.pratap.hotel.model.Extras;
 import com.pratap.hotel.model.Guest;
 import com.pratap.hotel.model.BookingRecord;
+import com.pratap.hotel.model.BookingDetails;
 import com.pratap.hotel.model.Room;
 import com.pratap.hotel.model.RoomType;
 import jakarta.servlet.http.HttpSession;
@@ -104,6 +105,7 @@ public class HotelBookingController {
 
         Bill bill = SunMoonResort.calculateBill(assignedRoom.getRoomNumber(), daysStayed, extras, petWeight, spaSessions);
 
+
         model.addAttribute("bill", bill);
         model.addAttribute("rooms", HotelData.ROOMS);
         model.addAttribute("roomRates", HotelData.ROOM_RATES);
@@ -127,6 +129,9 @@ public class HotelBookingController {
     public String confirmBooking(@RequestParam("roomNumber") int roomNumber,
                                  @RequestParam(value = "guestName", required = false) String guestName,
                                  @RequestParam(value = "contactNumber", required = false) String contactNumber,
+                                 @RequestParam("daysStayed") int daysStayed,
+                                 @RequestParam("totalAmount") double totalAmount,
+                                 @RequestParam Map<String, String> allParams,
                                  Model model) {
         // mark the room as booked
         HotelData.ROOMS.stream()
@@ -134,9 +139,41 @@ public class HotelBookingController {
                 .findFirst()
                 .ifPresent(r -> r.setBooked(true));
 
-        // store guest details for future use
+        // store booking details with guest and bill
         if (guestName != null && !guestName.isBlank()) {
-            HotelData.BOOKINGS.put(roomNumber, new Guest(guestName, contactNumber));
+            Guest guest = new Guest(guestName, contactNumber);
+            
+            // Reconstruct Bill from form data (only on confirmation)
+            Map<String, Double> breakdown = new LinkedHashMap<>();
+            Map<String, String> calculationDetails = new LinkedHashMap<>();
+            
+            // Extract breakdown parameters (format: breakdown_ItemName=amount)
+            for (String key : allParams.keySet()) {
+                if (key.startsWith("breakdown_")) {
+                    String itemName = key.substring(10); // Remove "breakdown_" prefix
+                    try {
+                        double amount = Double.parseDouble(allParams.get(key));
+                        breakdown.put(itemName, amount);
+                    } catch (NumberFormatException e) {
+                        // Skip invalid entries
+                    }
+                }
+            }
+            
+            // Extract calculation details (format: calculation_ItemName=details)
+            for (String key : allParams.keySet()) {
+                if (key.startsWith("calculation_")) {
+                    String itemName = key.substring(12); // Remove "calculation_" prefix
+                    calculationDetails.put(itemName, allParams.get(key));
+                }
+            }
+            
+            // Create Bill object with reconstructed data
+            Bill bill = new Bill(totalAmount, breakdown, calculationDetails);
+            
+            // Create BookingDetails with guest and bill (only here, at confirmation)
+            BookingDetails bookingDetails = new BookingDetails(guest, bill, daysStayed);
+            HotelData.BOOKINGS.put(roomNumber, bookingDetails);
         }
 
         model.addAttribute("rooms", HotelData.ROOMS);
@@ -231,13 +268,16 @@ public class HotelBookingController {
         }
 
         List<BookingRecord> bookingRecords = new java.util.ArrayList<>();
-        HotelData.BOOKINGS.forEach((roomNum, guest) -> {
+        HotelData.BOOKINGS.forEach((roomNum, bookingDetails) -> {
             String roomType = HotelData.ROOMS.stream()
                     .filter(r -> r.getRoomNumber() == roomNum)
                     .findFirst()
                     .map(r -> r.getRoomType().name())
                     .orElse("UNKNOWN");
-            bookingRecords.add(new BookingRecord(roomNum, guest.getName(), guest.getContactNumber(), roomType));
+            Guest guest = bookingDetails.getGuest();
+            Bill bill = bookingDetails.getBill();
+            int daysStayed = bookingDetails.getDaysStayed();
+            bookingRecords.add(new BookingRecord(roomNum, guest.getName(), guest.getContactNumber(), roomType, bill, daysStayed));
         });
 
         model.addAttribute("bookings", bookingRecords);

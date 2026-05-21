@@ -5,6 +5,7 @@ import com.pratap.hotel.model.Extras;
 import com.pratap.hotel.model.RoomType;
 import com.pratap.hotel.model.Room;
 import com.pratap.hotel.model.Guest;
+import com.pratap.hotel.model.BookingDetails;
 
 public class HotelData {
 
@@ -12,8 +13,8 @@ public class HotelData {
     public static final Map<RoomType, Double> ROOM_RATES = new HashMap<>();
     public static final Map<Extras, Double> EXTRAS_RATE = new HashMap<>();
     public static final Map<String, Double> PET_FEE_RATES = new HashMap<>();
-    // stores confirmed bookings: roomNumber -> Guest details
-    public static final Map<Integer, Guest> BOOKINGS = new HashMap<>();
+    // stores confirmed bookings: roomNumber -> BookingDetails (includes guest and bill)
+    public static final Map<Integer, BookingDetails> BOOKINGS = new HashMap<>();
 
     static {
         // Add available rooms

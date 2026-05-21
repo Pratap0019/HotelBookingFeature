@@ -361,6 +361,14 @@
             <input type="hidden" name="daysStayed" data-th-value="${daysStayed}">
             <input type="hidden" name="totalAmount" data-th-value="${bill.totalAmount}">
 
+            <!-- Store bill breakdown data as hidden fields -->
+            <div data-th-each="entry : ${bill.breakdown}">
+                <input type="hidden" data-th-name="${'breakdown_' + entry.key}" data-th-value="${entry.value}">
+            </div>
+            <div data-th-each="entry : ${bill.calculationDetails}">
+                <input type="hidden" data-th-name="${'calculation_' + entry.key}" data-th-value="${entry.value}">
+            </div>
+
             <div class="row g-2 mb-3">
                 <div class="col-md-6">
                     <label class="form-label">Full Name</label>
