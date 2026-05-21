@@ -19,6 +19,10 @@
         .badge-booked    { background-color: silver;  color: #212529; }
         .badge-yes       { background-color: #B8860B; color: #fff; }
         .badge-no        { background-color: silver;  color: #212529; }
+        .status-confirmed  { background-color: #0d6efd; color: #fff; }
+        .status-serving    { background-color: #ffc107; color: #212529; }
+        .status-checkedout { background-color: #198754; color: #fff; }
+        .status-cancelled  { background-color: #dc3545; color: #fff; }
 
          .header {
             background-size: cover;
@@ -182,6 +186,7 @@
             <th>Contact</th>
             <th>Check-in</th>
             <th>Check-out</th>
+            <th>Status</th>
             <th>Total Amount</th>
             <th>Actions</th>
         </tr>
@@ -194,17 +199,33 @@
             <td data-th-text="${b.contactNumber}"></td>
             <td data-th-text="${b.checkInDate}"></td>
             <td data-th-text="${b.checkOutDate}"></td>
+            <td>
+                <span data-th-if="${b.status.name() == 'CONFIRMED'}" class="badge status-confirmed">Confirmed</span>
+                <span data-th-if="${b.status.name() == 'CHECKED_IN'}" class="badge status-serving">Serving Guests</span>
+                <span data-th-if="${b.status.name() == 'CHECKED_OUT'}" class="badge status-checkedout">Checked Out</span>
+                <span data-th-if="${b.status.name() == 'CANCELLED'}" class="badge status-cancelled">Cancelled</span>
+            </td>
             <td data-th-text="'₹' + ${b.bill.totalAmount}"></td>
             <td>
-                <button class="btn btn-sm btn-info" data-bs-toggle="modal"
+                <form data-th-if="${b.status.name() == 'CONFIRMED'}" data-th-action="@{/admin/checkIn}" method="post" style="display:inline-block">
+                    <input type="hidden" name="bookingId" data-th-value="${b.bookingId}">
+                    <button class="btn btn-sm btn-warning" type="submit">Checked In</button>
+                </form>
+                <form data-th-if="${b.status.name() == 'CONFIRMED'}" data-th-action="@{/admin/cancelBooking}" method="post" style="display:inline-block">
+                    <input type="hidden" name="bookingId" data-th-value="${b.bookingId}">
+                    <button class="btn btn-sm btn-danger" type="submit">Cancel Booking</button>
+                </form>
+
+                <form data-th-if="${b.status.name() == 'CHECKED_IN'}" data-th-action="@{/admin/checkOut}" method="post" style="display:inline-block">
+                    <input type="hidden" name="bookingId" data-th-value="${b.bookingId}">
+                    <button class="btn btn-sm btn-success" type="submit">Check Out</button>
+                </form>
+
+                <button data-th-if="${b.status.name() == 'CHECKED_OUT'}" class="btn btn-sm btn-info" data-bs-toggle="modal"
                         th:data-bs-target="'#billModal-' + ${b.bookingId}"
                         title="View Price Breakdown">
                     View Bill
                 </button>
-                <form data-th-action="@{/admin/cancelBooking}" method="post" style="display:inline-block">
-                    <input type="hidden" name="bookingId" data-th-value="${b.bookingId}">
-                    <button class="btn btn-sm btn-danger" type="submit">Cancel Booking</button>
-                </form>
             </td>
         </tr>
         </tbody>
@@ -415,8 +436,6 @@
                 <tr>
                     <th>Room No</th>
                     <th>Type</th>
-                    <th>Balcony</th>
-                    <th>Nature's View</th>
                     <th>Status</th>
                     <th>Booked Date(s)</th>
                 </tr>
@@ -425,14 +444,6 @@
                 <tr data-th-each="room : ${rooms}">
                     <td data-th-text="${room.roomNumber}"></td>
                     <td data-th-text="${room.roomType}"></td>
-                    <td>
-                        <span data-th-if="${room.hasBalcony()}"  class="badge badge-yes">Yes</span>
-                        <span data-th-unless="${room.hasBalcony()}" class="badge badge-no">No</span>
-                    </td>
-                    <td>
-                        <span data-th-if="${room.hasNatureView()}"  class="badge badge-yes">Yes</span>
-                        <span data-th-unless="${room.hasNatureView()}" class="badge badge-no">No</span>
-                    </td>
                     <td>
                         <span data-th-if="${roomBookingRanges[room.roomNumber] != '-'}" class="badge badge-booked">Booked</span>
                         <span data-th-unless="${roomBookingRanges[room.roomNumber] != '-'}" class="badge badge-available">Available</span>

@@ -9,6 +9,7 @@ import com.pratap.hotel.model.BookingRecord;
 import com.pratap.hotel.model.BookingDetails;
 import com.pratap.hotel.model.Room;
 import com.pratap.hotel.model.RoomType;
+import com.pratap.hotel.model.BookingStatus;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -78,15 +79,33 @@ public class HotelBookingController {
             return "redirect:/admin/login";
         }
 
-        // Remove a specific booking entry; keep other non-overlapping reservations for the same room.
-        List<Integer> emptyRooms = new ArrayList<>();
-        HotelData.BOOKINGS.forEach((roomNumber, bookings) -> {
-            bookings.removeIf(b -> b.getBookingId().equals(bookingId));
-            if (bookings.isEmpty()) {
-                emptyRooms.add(roomNumber);
-            }
-        });
-        emptyRooms.forEach(HotelData.BOOKINGS::remove);
+        updateBookingStatus(bookingId, BookingStatus.CANCELLED);
+
+        // redirect back to bookings list
+        return "redirect:/bookings";
+    }
+
+    @PostMapping("/admin/checkIn")
+    public String checkInBooking(@RequestParam("bookingId") String bookingId, HttpSession session) {
+        Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
+        if (isAdmin == null || !isAdmin) {
+            return "redirect:/admin/login";
+        }
+
+        updateBookingStatus(bookingId, BookingStatus.CHECKED_IN);
+
+        // redirect back to bookings list
+        return "redirect:/bookings";
+    }
+
+    @PostMapping("/admin/checkOut")
+    public String checkOutBooking(@RequestParam("bookingId") String bookingId, HttpSession session) {
+        Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
+        if (isAdmin == null || !isAdmin) {
+            return "redirect:/admin/login";
+        }
+
+        updateBookingStatus(bookingId, BookingStatus.CHECKED_OUT);
 
         // redirect back to bookings list
         return "redirect:/bookings";
@@ -227,7 +246,8 @@ public class HotelBookingController {
                     bill,
                     daysStayed,
                     checkIn,
-                    checkOut
+                    checkOut,
+                    BookingStatus.CONFIRMED
             );
             HotelData.BOOKINGS.computeIfAbsent(roomNumber, rn -> new ArrayList<>()).add(bookingDetails);
         }
@@ -357,7 +377,8 @@ public class HotelBookingController {
                         bill,
                         daysStayed,
                         checkInDate,
-                        checkOutDate
+                        checkOutDate,
+                        bookingDetails.getStatus()
                 ));
             });
         });
@@ -371,7 +392,9 @@ public class HotelBookingController {
 
     private boolean isRoomAvailableForRange(int roomNumber, LocalDate checkIn, LocalDate checkOut) {
         List<BookingDetails> existingBookings = HotelData.BOOKINGS.getOrDefault(roomNumber, java.util.Collections.emptyList());
-        return existingBookings.stream().noneMatch(existing -> hasOverlap(existing, checkIn, checkOut));
+        return existingBookings.stream()
+                .filter(existing -> existing.getStatus() == BookingStatus.CONFIRMED || existing.getStatus() == BookingStatus.CHECKED_IN)
+                .noneMatch(existing -> hasOverlap(existing, checkIn, checkOut));
     }
 
     private boolean hasOverlap(BookingDetails existing, LocalDate requestedCheckIn, LocalDate requestedCheckOut) {
@@ -384,13 +407,30 @@ public class HotelBookingController {
         Map<Integer, String> ranges = new LinkedHashMap<>();
         HotelData.ROOMS.forEach(room -> {
             List<BookingDetails> bookings = HotelData.BOOKINGS.getOrDefault(room.getRoomNumber(), java.util.Collections.emptyList());
-            String rangeText = bookings.isEmpty()
-                    ? "-"
-                    : bookings.stream()
+            String rangeText = bookings.stream()
+                    .filter(b -> b.getStatus() == BookingStatus.CONFIRMED || b.getStatus() == BookingStatus.CHECKED_IN)
                     .map(b -> b.getCheckInDate() + " to " + b.getCheckOutDate())
                     .collect(Collectors.joining(" | "));
+            if (rangeText.isBlank()) {
+                rangeText = "-";
+            }
             ranges.put(room.getRoomNumber(), rangeText);
         });
         return ranges;
+    }
+
+    private void updateBookingStatus(String bookingId, BookingStatus targetStatus) {
+        HotelData.BOOKINGS.values().forEach(bookings -> bookings.stream()
+                .filter(b -> b.getBookingId().equals(bookingId))
+                .findFirst()
+                .ifPresent(b -> {
+                    if (targetStatus == BookingStatus.CANCELLED && b.getStatus() == BookingStatus.CONFIRMED) {
+                        b.setStatus(targetStatus);
+                    } else if (targetStatus == BookingStatus.CHECKED_IN && b.getStatus() == BookingStatus.CONFIRMED) {
+                        b.setStatus(targetStatus);
+                    } else if (targetStatus == BookingStatus.CHECKED_OUT && b.getStatus() == BookingStatus.CHECKED_IN) {
+                        b.setStatus(targetStatus);
+                    }
+                }));
     }
 }

@@ -11,9 +11,10 @@ public class BookingRecord {
     private final int daysStayed;
     private final String checkInDate;
     private final String checkOutDate;
+    private final BookingStatus status;
 
     public BookingRecord(String bookingId, int roomNumber, String guestName, String contactNumber, String roomType, Bill bill, int daysStayed,
-                         String checkInDate, String checkOutDate) {
+                         String checkInDate, String checkOutDate, BookingStatus status) {
         this.bookingId = bookingId;
         this.roomNumber = roomNumber;
         this.guestName = guestName;
@@ -23,6 +24,7 @@ public class BookingRecord {
         this.daysStayed = daysStayed;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
+        this.status = status;
     }
 
     public String getBookingId() {
@@ -59,6 +61,10 @@ public class BookingRecord {
 
     public String getCheckOutDate() {
         return checkOutDate;
+    }
+
+    public BookingStatus getStatus() {
+        return status;
     }
 }
 
