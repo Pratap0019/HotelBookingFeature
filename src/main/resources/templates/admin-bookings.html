@@ -15,6 +15,12 @@
             font-family: 'Montserrat', 'Poppins', sans-serif;
             padding-top: 0;
         }
+        .admin-table-section {
+            width: 95%;
+            max-width: none;
+            margin-left: auto;
+            margin-right: auto;
+        }
         table, .table, th, td {
             font-family: 'Montserrat', 'Poppins', sans-serif;
         }
@@ -179,7 +185,7 @@
     </div>
 </div>
 
-<div class="container mt-4">
+<div class="container mt-4 admin-table-section">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="booking-title">Bookings Information :</h2>
         <p>(Admin access only)</p>
@@ -227,7 +233,7 @@
                 <span data-th-if="${b.status.name() == 'CHECKED_OUT'}" class="badge status-checkedout status-badge-fixed">Checked Out</span>
                 <span data-th-if="${b.status.name() == 'CANCELLED'}" class="badge status-cancelled status-badge-fixed">Cancelled</span>
             </td>
-            <td data-th-text="'₹' + ${b.bill.totalAmount}"></td>
+            <td data-th-text="'₹' + ${#numbers.formatDecimal(b.bill.totalAmount, 1, 2)}"></td>
             <td>
                 <form data-th-if="${b.status.name() == 'CONFIRMED'}" data-th-action="@{/admin/checkIn}" method="post" style="display:inline-block">
                     <input type="hidden" name="bookingId" data-th-value="${b.bookingId}">

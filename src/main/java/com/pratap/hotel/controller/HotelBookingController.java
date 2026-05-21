@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,11 +31,26 @@ public class HotelBookingController {
 
     @GetMapping("/")
     public String showIndex(Model model) {
-        model.addAttribute("rooms", HotelData.ROOMS);
-        model.addAttribute("roomRates", getHomepageRoomRatesInOrder());
-        model.addAttribute("extrasRate", getHomepageExtrasInOrder());
-        model.addAttribute("petFeeRates", getHomepagePetFeesInOrder());
-        model.addAttribute("roomTypeSummary", buildRoomTypeSummary());
+        addHomepageBaseAttributes(model);
+        model.addAttribute("searchPerformed", false);
+        model.addAttribute("searchedBookings", new ArrayList<BookingRecord>());
+        return "homepage";
+    }
+
+    @PostMapping("/searchBookings")
+    public String searchBookings(@RequestParam("mobileNumber") String mobileNumber, Model model) {
+        addHomepageBaseAttributes(model);
+
+        String normalizedInput = normalizeToTenDigits(mobileNumber);
+        model.addAttribute("searchPerformed", true);
+        model.addAttribute("searchedMobile", normalizedInput);
+
+        List<BookingRecord> matchedBookings = buildAllBookingRecords().stream()
+                .filter(record -> normalizeToTenDigits(record.getContactNumber()).equals(normalizedInput))
+                .sorted(Comparator.comparing(BookingRecord::getCheckInDate).reversed())
+                .collect(Collectors.toList());
+
+        model.addAttribute("searchedBookings", matchedBookings);
         return "homepage";
     }
 
@@ -348,6 +364,14 @@ public class HotelBookingController {
         return ordered;
     }
 
+    private void addHomepageBaseAttributes(Model model) {
+        model.addAttribute("rooms", HotelData.ROOMS);
+        model.addAttribute("roomRates", getHomepageRoomRatesInOrder());
+        model.addAttribute("extrasRate", getHomepageExtrasInOrder());
+        model.addAttribute("petFeeRates", getHomepagePetFeesInOrder());
+        model.addAttribute("roomTypeSummary", buildRoomTypeSummary());
+    }
+
     @GetMapping("/bookings")
     public String bookingsList(Model model, HttpSession session) {
         Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
@@ -388,6 +412,43 @@ public class HotelBookingController {
         model.addAttribute("rooms", HotelData.ROOMS);
         model.addAttribute("roomBookingRanges", buildRoomBookingRanges());
         return "admin-bookings";
+    }
+
+    private List<BookingRecord> buildAllBookingRecords() {
+        List<BookingRecord> bookingRecords = new ArrayList<>();
+        HotelData.BOOKINGS.forEach((roomNum, bookingDetailsList) -> {
+            String roomType = HotelData.ROOMS.stream()
+                    .filter(r -> r.getRoomNumber() == roomNum)
+                    .findFirst()
+                    .map(r -> r.getRoomType().name())
+                    .orElse("UNKNOWN");
+            bookingDetailsList.forEach(bookingDetails -> {
+                Guest guest = bookingDetails.getGuest();
+                Bill bill = bookingDetails.getBill();
+                bookingRecords.add(new BookingRecord(
+                        bookingDetails.getBookingId(),
+                        roomNum,
+                        guest.getName(),
+                        guest.getContactNumber(),
+                        roomType,
+                        bill,
+                        bookingDetails.getDaysStayed(),
+                        bookingDetails.getCheckInDate(),
+                        bookingDetails.getCheckOutDate(),
+                        bookingDetails.getStatus()
+                ));
+            });
+        });
+        return bookingRecords;
+    }
+
+    private String normalizeToTenDigits(String rawMobile) {
+        if (rawMobile == null) return "";
+        String digits = rawMobile.replaceAll("\\D", "");
+        if (digits.length() > 10) {
+            return digits.substring(digits.length() - 10);
+        }
+        return digits;
     }
 
     private boolean isRoomAvailableForRange(int roomNumber, LocalDate checkIn, LocalDate checkOut) {

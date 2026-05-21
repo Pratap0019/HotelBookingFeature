@@ -220,6 +220,11 @@
             color: #212529;
         }
 
+        .status-confirmed { background-color: #0d6efd; color: #fff; }
+        .status-staying { background-color: #ffc107; color: #212529; }
+        .status-checkedout { background-color: #198754; color: #fff; }
+        .status-cancelled { background-color: #dc3545; color: #fff; }
+
         /* Footer Styles */
         footer {
             background-color: #FAF9F3; /* Off-white background */
@@ -501,6 +506,64 @@
         </tr>
         </tbody>
     </table>
+
+    <div class="card mt-4">
+        <div class="card-header bg-dark text-white">Search Your Booking</div>
+        <div class="card-body">
+            <form method="post" action="/searchBookings" class="mb-3">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-8">
+                        <label class="form-label" for="mobileSearch">Mobile Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text">+91</span>
+                            <input id="mobileSearch" type="tel" class="form-control" name="mobileNumber"
+                                   maxlength="10" pattern="[6-9][0-9]{9}" placeholder="10-digit mobile number"
+                                   th:value="${searchedMobile}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary">Search Booking</button>
+                    </div>
+                </div>
+            </form>
+
+            <div th:if="${searchPerformed}">
+                <div class="alert alert-info" th:if="${#lists.isEmpty(searchedBookings)}">
+                    No bookings found for +91-<span th:text="${searchedMobile}"></span>.
+                </div>
+
+                <table class="table table-bordered table-striped" th:if="${!#lists.isEmpty(searchedBookings)}">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Room No</th>
+                        <th>Room Type</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Status</th>
+                        <th>Total (₹)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="b : ${searchedBookings}">
+                        <td th:text="${b.bookingId}"></td>
+                        <td th:text="${b.roomNumber}"></td>
+                        <td th:text="${b.roomType}"></td>
+                        <td th:text="${b.checkInDate}"></td>
+                        <td th:text="${b.checkOutDate}"></td>
+                        <td>
+                            <span th:if="${b.status.name() == 'CONFIRMED'}" class="badge status-confirmed">Confirmed</span>
+                            <span th:if="${b.status.name() == 'CHECKED_IN'}" class="badge status-staying">Staying</span>
+                            <span th:if="${b.status.name() == 'CHECKED_OUT'}" class="badge status-checkedout">Checked Out</span>
+                            <span th:if="${b.status.name() == 'CANCELLED'}" class="badge status-cancelled">Cancelled</span>
+                        </td>
+                        <td th:text="${#numbers.formatDecimal(b.bill.totalAmount, 1, 2)}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
 </div>
 <div class="text-center my-5">

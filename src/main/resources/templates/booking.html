@@ -377,11 +377,11 @@
                           title="As per indian income tax rule rooms priced up to ₹7,500 attract a 5% GST (without Input Tax Credit), while rooms priced above ₹7,500 are taxed at 18% GST (with ITC eligibility)">i</span>
                 </td>
                 <td data-th-text="${bill.calculationDetails[entry.key]}"></td>
-                <td data-th-text="${entry.value}"></td>
+                <td data-th-text="${#numbers.formatDecimal(entry.value, 1, 2)}"></td>
             </tr>
             <tr class="table-success">
                 <td colspan="2"><strong>Total</strong></td>
-                <td><strong data-th-text="${bill.getTotalAmount}"></strong></td>
+                <td><strong data-th-text="${#numbers.formatDecimal(bill.getTotalAmount, 1, 2)}"></strong></td>
             </tr>
             </tbody>
         </table>
