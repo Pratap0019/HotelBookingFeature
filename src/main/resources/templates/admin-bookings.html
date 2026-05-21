@@ -180,6 +180,8 @@
             <th>Room Type</th>
             <th>Guest Name</th>
             <th>Contact</th>
+            <th>Check-in</th>
+            <th>Check-out</th>
             <th>Total Amount</th>
             <th>Actions</th>
         </tr>
@@ -190,15 +192,17 @@
             <td data-th-text="${b.roomType}"></td>
             <td data-th-text="${b.guestName}"></td>
             <td data-th-text="${b.contactNumber}"></td>
+            <td data-th-text="${b.checkInDate}"></td>
+            <td data-th-text="${b.checkOutDate}"></td>
             <td data-th-text="'₹' + ${b.bill.totalAmount}"></td>
             <td>
                 <button class="btn btn-sm btn-info" data-bs-toggle="modal"
-                        th:data-bs-target="'#billModal-' + ${b.roomNumber}"
+                        th:data-bs-target="'#billModal-' + ${b.bookingId}"
                         title="View Price Breakdown">
                     View Bill
                 </button>
                 <form data-th-action="@{/admin/cancelBooking}" method="post" style="display:inline-block">
-                    <input type="hidden" name="roomNumber" data-th-value="${b.roomNumber}">
+                    <input type="hidden" name="bookingId" data-th-value="${b.bookingId}">
                     <button class="btn btn-sm btn-danger" type="submit">Cancel Booking</button>
                 </form>
             </td>
@@ -208,7 +212,7 @@
 
      <!-- Bill Modals for each booking -->
      <div data-th-each="b : ${bookings}">
-         <div class="modal fade" th:id="'billModal-' + ${b.roomNumber}" tabindex="-1" aria-hidden="true">
+         <div class="modal fade" th:id="'billModal-' + ${b.bookingId}" tabindex="-1" aria-hidden="true">
              <div class="modal-dialog modal-lg">
                  <div class="modal-content">
                      <div class="modal-header">
@@ -352,7 +356,8 @@
                      <div class="modal-footer">
                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                          <button type="button" class="btn btn-primary"
-                                 th:onclick="|printBill('billModal-${b.roomNumber}')|">Print Bill</button>
+                                 onclick="printBill(this.dataset.modalId)"
+                                 th:attr="data-modal-id=${'billModal-' + b.bookingId}">Print Bill</button>
                      </div>
                  </div>
              </div>
@@ -413,6 +418,7 @@
                     <th>Balcony</th>
                     <th>Nature's View</th>
                     <th>Status</th>
+                    <th>Booked Date(s)</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -428,9 +434,10 @@
                         <span data-th-unless="${room.hasNatureView()}" class="badge badge-no">No</span>
                     </td>
                     <td>
-                        <span data-th-if="${room.booked}"  class="badge badge-booked">Booked</span>
-                        <span data-th-unless="${room.booked}" class="badge badge-available">Available</span>
+                        <span data-th-if="${roomBookingRanges[room.roomNumber] != '-'}" class="badge badge-booked">Booked</span>
+                        <span data-th-unless="${roomBookingRanges[room.roomNumber] != '-'}" class="badge badge-available">Available</span>
                     </td>
+                    <td data-th-text="${roomBookingRanges[room.roomNumber]}"></td>
                 </tr>
                 </tbody>
             </table>

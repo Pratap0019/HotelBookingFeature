@@ -15,9 +15,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Controller
@@ -39,7 +43,7 @@ public class HotelBookingController {
         model.addAttribute("roomRates", HotelData.ROOM_RATES);
         model.addAttribute("extrasRate", HotelData.EXTRAS_RATE);
         model.addAttribute("petFeeRates", HotelData.PET_FEE_RATES);
-        model.addAttribute("roomTypeAvailability", getRoomTypeAvailability());
+        model.addAttribute("roomTypeAvailability", new LinkedHashMap<RoomType, Long>());
         return "booking";  // booking.html
     }
 
@@ -68,38 +72,85 @@ public class HotelBookingController {
     }
 
     @PostMapping("/admin/cancelBooking")
-    public String cancelBooking(@RequestParam("roomNumber") int roomNumber, HttpSession session, Model model) {
+    public String cancelBooking(@RequestParam("bookingId") String bookingId, HttpSession session) {
         Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
         if (isAdmin == null || !isAdmin) {
             return "redirect:/admin/login";
         }
 
-        // unbook room and remove booking
-        HotelData.ROOMS.stream()
-                .filter(r -> r.getRoomNumber() == roomNumber)
-                .findFirst()
-                .ifPresent(r -> r.setBooked(false));
-        HotelData.BOOKINGS.remove(roomNumber);
+        // Remove a specific booking entry; keep other non-overlapping reservations for the same room.
+        List<Integer> emptyRooms = new ArrayList<>();
+        HotelData.BOOKINGS.forEach((roomNumber, bookings) -> {
+            bookings.removeIf(b -> b.getBookingId().equals(bookingId));
+            if (bookings.isEmpty()) {
+                emptyRooms.add(roomNumber);
+            }
+        });
+        emptyRooms.forEach(HotelData.BOOKINGS::remove);
 
         // redirect back to bookings list
         return "redirect:/bookings";
     }
 
     @PostMapping("/calculatePrice")
-    public String calculatePrice(@RequestParam("roomType") String roomType,
+    public String calculatePrice(@RequestParam(value = "roomType", required = false) String roomType,
                                  @RequestParam("checkIn") String checkIn,
                                  @RequestParam("checkOut") String checkOut,
                                  @RequestParam("daysStayed") int daysStayed,
                                  @RequestParam(value = "extras", required = false) List<Extras> extras,
                                  @RequestParam(value = "petWeight", required = false) Double petWeight,
                                  @RequestParam(value = "spaSessions", required = false) Integer spaSessions,
+                                  @RequestParam(value = "action", required = false) String action,
                                  Model model) {
+
+        LocalDate checkInDate;
+        LocalDate checkOutDate;
+        try {
+            checkInDate = LocalDate.parse(checkIn);
+            checkOutDate = LocalDate.parse(checkOut);
+        } catch (DateTimeParseException ex) {
+            throw new RuntimeException("Invalid check-in/check-out date format.");
+        }
+
+        if (!checkOutDate.isAfter(checkInDate)) {
+            throw new RuntimeException("Check-out must be after check-in.");
+        }
+
+        int computedDays = (int) java.time.temporal.ChronoUnit.DAYS.between(checkInDate, checkOutDate);
+        if (daysStayed != computedDays) {
+            daysStayed = computedDays;
+        }
+
+        Map<RoomType, Long> roomTypeAvailability = getRoomTypeAvailability(checkInDate, checkOutDate);
+        model.addAttribute("rooms", HotelData.ROOMS);
+        model.addAttribute("roomRates", HotelData.ROOM_RATES);
+        model.addAttribute("extrasRate", HotelData.EXTRAS_RATE);
+        model.addAttribute("petFeeRates", HotelData.PET_FEE_RATES);
+        model.addAttribute("roomTypeAvailability", roomTypeAvailability);
+        model.addAttribute("spaSessions", spaSessions);
+        model.addAttribute("checkIn", checkIn);
+        model.addAttribute("checkOut", checkOut);
+        model.addAttribute("daysStayed", daysStayed);
+        model.addAttribute("petWeight", petWeight);
+        model.addAttribute("selectedExtras", extras != null ? extras : new ArrayList<>());
+        model.addAttribute("availabilityChecked", true);
+
+        // First step: only compute date-based availability and let user pick room type after that.
+        if ("availability".equalsIgnoreCase(action)) {
+            return "booking";
+        }
+
+        if (roomType == null || roomType.isBlank()) {
+            model.addAttribute("errorMessage", "Please select a room type after checking availability.");
+            return "booking";
+        }
 
         RoomType type = RoomType.valueOf(roomType);
 
-        // Auto-assign the first available room of the requested type
+        // Auto-assign the first room available for this specific date range.
         Room assignedRoom = HotelData.ROOMS.stream()
-                .filter(r -> r.getRoomType() == type && !r.isBooked())
+                .filter(r -> r.getRoomType() == type)
+                .filter(r -> isRoomAvailableForRange(r.getRoomNumber(), checkInDate, checkOutDate))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No available rooms of type " + roomType + ". Please choose a different type."));
 
@@ -107,20 +158,9 @@ public class HotelBookingController {
 
 
         model.addAttribute("bill", bill);
-        model.addAttribute("rooms", HotelData.ROOMS);
-        model.addAttribute("roomRates", HotelData.ROOM_RATES);
-        model.addAttribute("extrasRate", HotelData.EXTRAS_RATE);
-        model.addAttribute("petFeeRates", HotelData.PET_FEE_RATES);
-        model.addAttribute("roomTypeAvailability", getRoomTypeAvailability());
-        model.addAttribute("spaSessions", spaSessions);
 
         model.addAttribute("assignedRoomNumber", assignedRoom.getRoomNumber());
         model.addAttribute("selectedRoomType", roomType);
-        model.addAttribute("checkIn", checkIn);
-        model.addAttribute("checkOut", checkOut);
-        model.addAttribute("daysStayed", daysStayed);
-        model.addAttribute("petWeight", petWeight);
-        model.addAttribute("selectedExtras", extras != null ? extras : new java.util.ArrayList<>());
 
         return "booking";
     }
@@ -135,11 +175,18 @@ public class HotelBookingController {
                                  @RequestParam("totalAmount") double totalAmount,
                                  @RequestParam Map<String, String> allParams,
                                  Model model) {
-        // mark the room as booked
-        HotelData.ROOMS.stream()
-                .filter(r -> r.getRoomNumber() == roomNumber)
-                .findFirst()
-                .ifPresent(r -> r.setBooked(true));
+        LocalDate checkInDate = LocalDate.parse(checkIn);
+        LocalDate checkOutDate = LocalDate.parse(checkOut);
+
+        if (!isRoomAvailableForRange(roomNumber, checkInDate, checkOutDate)) {
+            model.addAttribute("rooms", HotelData.ROOMS);
+            model.addAttribute("roomRates", HotelData.ROOM_RATES);
+            model.addAttribute("extrasRate", HotelData.EXTRAS_RATE);
+            model.addAttribute("petFeeRates", HotelData.PET_FEE_RATES);
+            model.addAttribute("roomTypeAvailability", getRoomTypeAvailability(checkInDate, checkOutDate));
+            model.addAttribute("errorMessage", "This room is no longer available for the selected dates. Please calculate again.");
+            return "booking";
+        }
 
         // store booking details with guest and bill
         if (guestName != null && !guestName.isBlank()) {
@@ -174,15 +221,22 @@ public class HotelBookingController {
             Bill bill = new Bill(totalAmount, breakdown, calculationDetails);
             
             // Create BookingDetails with guest and bill (only here, at confirmation)
-            BookingDetails bookingDetails = new BookingDetails(guest, bill, daysStayed, checkIn, checkOut);
-            HotelData.BOOKINGS.put(roomNumber, bookingDetails);
+            BookingDetails bookingDetails = new BookingDetails(
+                    UUID.randomUUID().toString(),
+                    guest,
+                    bill,
+                    daysStayed,
+                    checkIn,
+                    checkOut
+            );
+            HotelData.BOOKINGS.computeIfAbsent(roomNumber, rn -> new ArrayList<>()).add(bookingDetails);
         }
 
         model.addAttribute("rooms", HotelData.ROOMS);
         model.addAttribute("roomRates", HotelData.ROOM_RATES);
         model.addAttribute("extrasRate", HotelData.EXTRAS_RATE);
         model.addAttribute("petFeeRates", HotelData.PET_FEE_RATES);
-        model.addAttribute("roomTypeAvailability", getRoomTypeAvailability());
+        model.addAttribute("roomTypeAvailability", new LinkedHashMap<RoomType, Long>());
 
         // Determine the room type for a friendly message
         String roomTypeName = HotelData.ROOMS.stream()
@@ -202,11 +256,19 @@ public class HotelBookingController {
         return "booking";
     }
 
-    /** Returns a map of RoomType → count of currently available (not booked) rooms */
-    private Map<RoomType, Long> getRoomTypeAvailability() {
-        return HotelData.ROOMS.stream()
-                .filter(r -> !r.isBooked())
-                .collect(Collectors.groupingBy(Room::getRoomType, Collectors.counting()));
+    /** Returns availability by type for a specific date range; if dates are null, returns full inventory counts. */
+    private Map<RoomType, Long> getRoomTypeAvailability(LocalDate checkIn, LocalDate checkOut) {
+        Map<RoomType, Long> availability = new LinkedHashMap<>();
+        for (RoomType roomType : RoomType.values()) {
+            availability.put(roomType, 0L);
+        }
+
+        HotelData.ROOMS.stream()
+                .filter(r -> checkIn == null || checkOut == null || isRoomAvailableForRange(r.getRoomNumber(), checkIn, checkOut))
+                .collect(Collectors.groupingBy(Room::getRoomType, Collectors.counting()))
+                .forEach(availability::put);
+
+        return availability;
     }
 
     /**
@@ -216,8 +278,12 @@ public class HotelBookingController {
     private Map<RoomType, Map<String, Object>> buildRoomTypeSummary() {
         Map<RoomType, Map<String, Object>> summary = new java.util.LinkedHashMap<>();
         for (RoomType rt : new RoomType[]{RoomType.SINGLE, RoomType.DOUBLE, RoomType.SUITE}) {
+            LocalDate today = LocalDate.now();
+            LocalDate tomorrow = today.plusDays(1);
             long available = HotelData.ROOMS.stream()
-                    .filter(r -> r.getRoomType() == rt && !r.isBooked()).count();
+                    .filter(r -> r.getRoomType() == rt)
+                    .filter(r -> isRoomAvailableForRange(r.getRoomNumber(), today, tomorrow))
+                    .count();
             long total = HotelData.ROOMS.stream()
                     .filter(r -> r.getRoomType() == rt).count();
             Room sample = HotelData.ROOMS.stream()
@@ -270,32 +336,61 @@ public class HotelBookingController {
         }
 
         List<BookingRecord> bookingRecords = new java.util.ArrayList<>();
-        HotelData.BOOKINGS.forEach((roomNum, bookingDetails) -> {
+        HotelData.BOOKINGS.forEach((roomNum, bookingDetailsList) -> {
             String roomType = HotelData.ROOMS.stream()
                     .filter(r -> r.getRoomNumber() == roomNum)
                     .findFirst()
                     .map(r -> r.getRoomType().name())
                     .orElse("UNKNOWN");
-            Guest guest = bookingDetails.getGuest();
-            Bill bill = bookingDetails.getBill();
-            int daysStayed = bookingDetails.getDaysStayed();
-            String checkInDate = bookingDetails.getCheckInDate();
-            String checkOutDate = bookingDetails.getCheckOutDate();
-            bookingRecords.add(new BookingRecord(
-                    roomNum,
-                    guest.getName(),
-                    guest.getContactNumber(),
-                    roomType,
-                    bill,
-                    daysStayed,
-                    checkInDate,
-                    checkOutDate
-            ));
+            bookingDetailsList.forEach(bookingDetails -> {
+                Guest guest = bookingDetails.getGuest();
+                Bill bill = bookingDetails.getBill();
+                int daysStayed = bookingDetails.getDaysStayed();
+                String checkInDate = bookingDetails.getCheckInDate();
+                String checkOutDate = bookingDetails.getCheckOutDate();
+                bookingRecords.add(new BookingRecord(
+                        bookingDetails.getBookingId(),
+                        roomNum,
+                        guest.getName(),
+                        guest.getContactNumber(),
+                        roomType,
+                        bill,
+                        daysStayed,
+                        checkInDate,
+                        checkOutDate
+                ));
+            });
         });
 
         model.addAttribute("bookings", bookingRecords);
         // Pass full room inventory for admin-only detailed view
         model.addAttribute("rooms", HotelData.ROOMS);
+        model.addAttribute("roomBookingRanges", buildRoomBookingRanges());
         return "admin-bookings";
+    }
+
+    private boolean isRoomAvailableForRange(int roomNumber, LocalDate checkIn, LocalDate checkOut) {
+        List<BookingDetails> existingBookings = HotelData.BOOKINGS.getOrDefault(roomNumber, java.util.Collections.emptyList());
+        return existingBookings.stream().noneMatch(existing -> hasOverlap(existing, checkIn, checkOut));
+    }
+
+    private boolean hasOverlap(BookingDetails existing, LocalDate requestedCheckIn, LocalDate requestedCheckOut) {
+        LocalDate existingCheckIn = LocalDate.parse(existing.getCheckInDate());
+        LocalDate existingCheckOut = LocalDate.parse(existing.getCheckOutDate());
+        return requestedCheckIn.isBefore(existingCheckOut) && requestedCheckOut.isAfter(existingCheckIn);
+    }
+
+    private Map<Integer, String> buildRoomBookingRanges() {
+        Map<Integer, String> ranges = new LinkedHashMap<>();
+        HotelData.ROOMS.forEach(room -> {
+            List<BookingDetails> bookings = HotelData.BOOKINGS.getOrDefault(room.getRoomNumber(), java.util.Collections.emptyList());
+            String rangeText = bookings.isEmpty()
+                    ? "-"
+                    : bookings.stream()
+                    .map(b -> b.getCheckInDate() + " to " + b.getCheckOutDate())
+                    .collect(Collectors.joining(" | "));
+            ranges.put(room.getRoomNumber(), rangeText);
+        });
+        return ranges;
     }
 }

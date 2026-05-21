@@ -2,6 +2,7 @@
 package com.pratap.hotel.model;
 
 public class BookingRecord {
+    private final String bookingId;
     private final int roomNumber;
     private final String guestName;
     private final String contactNumber;
@@ -11,8 +12,9 @@ public class BookingRecord {
     private final String checkInDate;
     private final String checkOutDate;
 
-    public BookingRecord(int roomNumber, String guestName, String contactNumber, String roomType, Bill bill, int daysStayed,
+    public BookingRecord(String bookingId, int roomNumber, String guestName, String contactNumber, String roomType, Bill bill, int daysStayed,
                          String checkInDate, String checkOutDate) {
+        this.bookingId = bookingId;
         this.roomNumber = roomNumber;
         this.guestName = guestName;
         this.contactNumber = contactNumber;
@@ -21,6 +23,10 @@ public class BookingRecord {
         this.daysStayed = daysStayed;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
+    }
+
+    public String getBookingId() {
+        return bookingId;
     }
 
     public int getRoomNumber() {

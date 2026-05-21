@@ -227,25 +227,14 @@
 </div>
 <div class="booking-container container">
     <h2 class="text-center mb-4 booking-title">Book Your Stay</h2>
+    <div data-th-if="${errorMessage}" class="alert alert-danger" role="alert">
+        <span data-th-text="${errorMessage}"></span>
+    </div>
     <!-- View bookings moved to admin area -->
 
     <!-- Booking Form -->
     <div class="card p-4">
         <form action="/calculatePrice" method="post">
-
-            <!-- Room Type Selection -->
-            <div class="mb-3">
-                <label class="form-label" for="roomTypeSelect">Room Type</label>
-                <select id="roomTypeSelect" class="form-select" name="roomType" required data-th-value="${selectedRoomType}">
-                    <option value="" disabled selected>Select Room Type</option>
-                    <option data-th-each="entry : ${roomTypeAvailability}"
-                            data-th-value="${entry.key.name()}"
-                            data-th-disabled="${entry.value == 0}"
-                            data-th-text="${entry.key} + ' — ' + ${entry.value} + ' room' + (${entry.value} != 1 ? 's' : '') + ' available'">
-                    </option>
-                </select>
-                <div class="form-text text-muted">A room will be automatically assigned to you based on your chosen type.</div>
-            </div>
 
             <!-- Check-in & Check-out -->
             <div class="row mb-3">
@@ -265,6 +254,25 @@
             <div class="mb-3">
                 <label class="form-label" for="daysStayed">Days Stayed</label>
                 <input type="number" id="daysStayed" name="daysStayed" class="form-control" readonly required data-th-value="${daysStayed}">
+            </div>
+
+            <!-- Room Type Selection (enabled only after availability check) -->
+            <div class="mb-3">
+                <label class="form-label" for="roomTypeSelect">Room Type</label>
+                <select id="roomTypeSelect" class="form-select" name="roomType"
+                        data-th-disabled="${availabilityChecked == null || !availabilityChecked}">
+                    <option value=""
+                            data-th-selected="${selectedRoomType == null || selectedRoomType == ''}">
+                        First check date availability
+                    </option>
+                    <option data-th-each="entry : ${roomTypeAvailability}"
+                            data-th-value="${entry.key.name()}"
+                            data-th-selected="${selectedRoomType != null && selectedRoomType == entry.key.name()}"
+                            data-th-disabled="${entry.value == 0}"
+                            data-th-text="${entry.key} + ' - ' + ${entry.value} + ' room' + (${entry.value} != 1 ? 's' : '') + ' available'">
+                    </option>
+                </select>
+                <div class="form-text text-muted">Select check-in and check-out dates first, then choose room type from available options.</div>
             </div>
 
             <!-- Extras -->
@@ -308,9 +316,15 @@
                 <input type="number" step="0.1" class="form-control" name="petWeight" placeholder="Optional" data-th-value="${petWeight}">
             </div>
 
-            <!-- Calculate Price Button -->
+            <!-- Step Buttons -->
             <div class="text-center">
-                <button type="submit" class="btn btn-primary btn-lg">Calculate Price</button>
+                <button type="submit" class="btn btn-outline-primary btn-lg me-2" name="action" value="availability">
+                    Check Availability
+                </button>
+                <button type="submit" class="btn btn-primary btn-lg" name="action" value="calculate"
+                        data-th-disabled="${availabilityChecked == null || !availabilityChecked}">
+                    Calculate Price
+                </button>
             </div>
         </form>
     </div>
