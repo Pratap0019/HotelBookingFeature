@@ -48,9 +48,9 @@ public class HotelData {
         EXTRAS_RATE.put(Extras.PoolPASS, 500.0);
 
         // Pet fees
-        PET_FEE_RATES.put("under8kg", 200.0);
-        PET_FEE_RATES.put("under15kg", 350.0);
-        PET_FEE_RATES.put("over15kg", 500.0);
+        PET_FEE_RATES.put("Small (below 8kg)", 200.0);
+        PET_FEE_RATES.put("Medium (below 15kg)", 350.0);
+        PET_FEE_RATES.put("Large (above 15kg)", 500.0);
         //a
     }
 }

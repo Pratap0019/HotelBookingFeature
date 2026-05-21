@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -24,9 +25,9 @@ public class HotelBookingController {
     @GetMapping("/")
     public String showIndex(Model model) {
         model.addAttribute("rooms", HotelData.ROOMS);
-        model.addAttribute("roomRates", HotelData.ROOM_RATES);
-        model.addAttribute("extrasRate", HotelData.EXTRAS_RATE);
-        model.addAttribute("petFeeRates", HotelData.PET_FEE_RATES);
+        model.addAttribute("roomRates", getHomepageRoomRatesInOrder());
+        model.addAttribute("extrasRate", getHomepageExtrasInOrder());
+        model.addAttribute("petFeeRates", getHomepagePetFeesInOrder());
         model.addAttribute("roomTypeSummary", buildRoomTypeSummary());
         return "homepage";
     }
@@ -195,6 +196,31 @@ public class HotelBookingController {
             summary.put(rt, info);
         }
         return summary;
+    }
+
+    private Map<RoomType, Double> getHomepageRoomRatesInOrder() {
+        Map<RoomType, Double> ordered = new LinkedHashMap<>();
+        ordered.put(RoomType.SUITE, HotelData.ROOM_RATES.get(RoomType.SUITE));
+        ordered.put(RoomType.DOUBLE, HotelData.ROOM_RATES.get(RoomType.DOUBLE));
+        ordered.put(RoomType.SINGLE, HotelData.ROOM_RATES.get(RoomType.SINGLE));
+        return ordered;
+    }
+
+    private Map<Extras, Double> getHomepageExtrasInOrder() {
+        Map<Extras, Double> ordered = new LinkedHashMap<>();
+        ordered.put(Extras.SPA, HotelData.EXTRAS_RATE.get(Extras.SPA));
+        ordered.put(Extras.PoolPASS, HotelData.EXTRAS_RATE.get(Extras.PoolPASS));
+        ordered.put(Extras.GymPASS, HotelData.EXTRAS_RATE.get(Extras.GymPASS));
+        ordered.put(Extras.MATTRESS, HotelData.EXTRAS_RATE.get(Extras.MATTRESS));
+        return ordered;
+    }
+
+    private Map<String, Double> getHomepagePetFeesInOrder() {
+        Map<String, Double> ordered = new LinkedHashMap<>();
+        ordered.put("Large (above 15kg)", HotelData.PET_FEE_RATES.get("Large (above 15kg)"));
+        ordered.put("Medium (below 15kg)", HotelData.PET_FEE_RATES.get("Medium (below 15kg)"));
+        ordered.put("Small (below 8kg)", HotelData.PET_FEE_RATES.get("Small (below 8kg)"));
+        return ordered;
     }
 
     @GetMapping("/bookings")

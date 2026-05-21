@@ -58,9 +58,9 @@ public class SunMoonResort {
         // Pet fees
         double petFee = 0.0;
         if (petWeight != null) {
-            if (petWeight <= 8) petFee = HotelData.PET_FEE_RATES.get("under8kg");
-            else if (petWeight <= 15) petFee = HotelData.PET_FEE_RATES.get("under15kg");
-            else petFee = HotelData.PET_FEE_RATES.get("over15kg");
+            if (petWeight <= 8) petFee = HotelData.PET_FEE_RATES.get("Small (below 8kg)");
+            else if (petWeight <= 15) petFee = HotelData.PET_FEE_RATES.get("Medium (below 15kg)");
+            else petFee = HotelData.PET_FEE_RATES.get("Large (above 15kg)");
             // Pet fee is applied per stay in this implementation (as per project conventions)
             breakdown.put("Pet Fee", petFee);
             calculationDetails.put("Pet Fee", String.format("₹%.2f (one-time charge)", petFee));
