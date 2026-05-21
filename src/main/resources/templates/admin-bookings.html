@@ -351,12 +351,55 @@
                      </div>
                      <div class="modal-footer">
                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                         <button type="button" class="btn btn-primary" onclick="window.print()">Print Bill</button>
+                         <button type="button" class="btn btn-primary"
+                                 th:onclick="|printBill('billModal-${b.roomNumber}')|">Print Bill</button>
                      </div>
                  </div>
              </div>
          </div>
      </div>
+
+<script>
+    function printBill(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        const billBody = modal.querySelector('.modal-body');
+        if (!billBody) return;
+
+        const printWindow = window.open('', '_blank', 'width=900,height=700');
+        if (!printWindow) return;
+
+        const printableHtml = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Bill Invoice</title>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+                <style>
+                    body { background: #fff; margin: 0; padding: 24px; }
+                    @page { size: auto; margin: 12mm; }
+                </style>
+            </head>
+            <body>
+                ${billBody.innerHTML}
+            </body>
+            </html>
+        `;
+
+        printWindow.document.open();
+        printWindow.document.write(printableHtml);
+        printWindow.document.close();
+
+        printWindow.onload = function () {
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+        };
+    }
+</script>
 
     <!-- Full Room Inventory (admin-only) -->
     <h4 class="booking-title mt-5 mb-3">Full Room Inventory</h4>
